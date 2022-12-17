@@ -17,6 +17,6 @@ steps:
     repository: rdvansloten/deep-cut-bot
     command: 'buildAndPush'
     Dockerfile: 'Dockerfile'
-    tags: 
-    - '$(Build.BuildId)'
-    - 'latest'
+    tags: |
+      '$(Build.BuildId)'
+      'latest'
