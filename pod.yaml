@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
     - name: deep-cut-bot
-      image: rdvansloten:deep-cut-bot:latest
+      image: rdvansloten/deep-cut-bot:latest
       env: 
       - name: DISCORD_TOKEN 
         valueFrom: 
