@@ -1,11 +1,5 @@
 pool: 'Azure Pipelines'
 
-variables:
-- name: app
-  value: woomies-account-prod 
-- name: rg
-  value: woomies-resources-prod
-
 trigger:
   - main
 
