@@ -8,7 +8,7 @@ steps:
   displayName: Build and Push to Docker Container Registry
   inputs:
     containerRegistry: 'Docker Hub'
-    repository: rdvansloten/deep-cut-bot
+    repository: deep-cut-bot
     command: 'buildAndPush'
     Dockerfile: 'Dockerfile'
     tags: |
