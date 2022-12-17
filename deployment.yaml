@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deep-cut-bot
+  labels:
+    role: discord-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      role: discord-bot
+  template:
+    metadata:
+      labels:
+        role: discord-bot
+    spec:
+      containers:
+        - name: deep-cut-bot
+          image: rdvansloten/deep-cut-bot:latest
+          env: 
+          - name: DISCORD_TOKEN 
+            valueFrom: 
+              secretKeyRef: 
+                name: deep-cut-bot-secret 
+                key: discordtoken
