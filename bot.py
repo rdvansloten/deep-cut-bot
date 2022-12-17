@@ -31,6 +31,7 @@ def get_song(category):
     for k, v in songs.items():
       message += f"- [Deep Cut - {k}]({v})\n"
 
+  print(message)
   return message
 
 def get_schedule(category):
