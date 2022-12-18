@@ -11,6 +11,7 @@ steps:
     repository: rdvansloten/deep-cut-bot
     command: 'buildAndPush'
     Dockerfile: 'Dockerfile'
+    addPipelineData: false
     tags: |
       $(Build.BuildId)
       latest
