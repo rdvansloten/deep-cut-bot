@@ -45,8 +45,12 @@ def get_gear(category):
 
     if now <= data["saleEndTime"]:
       end_time_utc = parser.parse(data["saleEndTime"]).astimezone(utc_time)
+      difference = parser.parse(i["endTime"][:19]) - datetime.now()
+      hour_unit = "hours" if round(int(difference.total_seconds() / 3600)) != 1 else "hour"
+      time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
 
-      message = f"**THE DAILY DROP:** {data['brand']['name']}   _until [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC_\n"
+      message = f"**THE DAILY DROP:  {data['brand']['name']}**   _{time_remaining} remaining_\n\n"
+      message += f"Until [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n\n"
 
       for i in data['brandGears']:
         message += " \n"
@@ -57,7 +61,7 @@ def get_gear(category):
         message += f"```"
 
   elif category == "on-sale":
-    message = f"** GEAR ON SALE NOW **\n"
+    message = f"**GEAR ON SALE NOW**\n"
     
     for i in json_response["data"]["gesotown"]["limitedGears"]:
       
@@ -122,7 +126,7 @@ def get_schedule(category):
         time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
 
         message = f"**SALMON RUN**   _{time_remaining} remaining_\n\n"
-        message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC_\n\n"
+        message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n\n"
         message += f"** {i['setting']['coopStage']['name']}: **\n"
         for i in i["setting"]["weapons"]:
           message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
@@ -138,7 +142,7 @@ def get_schedule(category):
         time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
 
         message = f"**ANARCHY BATTLE**   _{time_remaining} remaining_\n\n"
-        message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC_\n\n"
+        message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n\n"
 
         for i in i['bankaraMatchSettings']:
           if i['mode'] == "CHALLENGE":
@@ -165,7 +169,7 @@ def get_schedule(category):
         time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
 
         message = f"**X BATTLE**   _{time_remaining} remaining_\n\n"
-        message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC_\n\n"
+        message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n\n"
         message += f"** {i['xMatchSetting']['vsRule']['name']}: **\n"
         for i in i['xMatchSetting']['vsStages']:
           message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
@@ -181,7 +185,7 @@ def get_schedule(category):
         time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
 
         message = f"**LEAGUE BATTLE**   _{time_remaining} remaining_\n\n"
-        message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC_\n\n"
+        message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n\n"
         
         message += f"** {i['leagueMatchSetting']['vsRule']['name']}: **\n"
         for i in i['leagueMatchSetting']['vsStages']:
@@ -198,7 +202,7 @@ def get_schedule(category):
         time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
 
         message = f"**REGULAR BATTLE**   _{time_remaining} remaining_\n\n"
-        message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC_\n\n"
+        message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n\n"
         message += f"** {i['regularMatchSetting']['vsRule']['name']}: **\n"
         for i in i['regularMatchSetting']['vsStages']:
           message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
