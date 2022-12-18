@@ -64,10 +64,10 @@ def get_gear(category):
       if now <= i["saleEndTime"]:
         difference = parser.parse(i["saleEndTime"][:19]) - datetime.now()
         hour_unit = "hours" if round(int(difference.total_seconds() / 3600)) != 1 else "hour"
-        time_remaining = "less than 1" if round(int(difference.total_seconds() / 3600)) < 1 else round(int(difference.total_seconds() / 3600))
+        time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
 
         message += " \n"
-        message += f"**{i['gear']['name']}**   _{time_remaining} {hour_unit} remaining_\n"
+        message += f"**{i['gear']['name']}**   _{time_remaining} remaining_\n"
         message += "```"
         message += f"Ability : {i['gear']['primaryGearPower']['name']}\n"
         message += f"Brand   : {i['gear']['brand']['name']}\n"
