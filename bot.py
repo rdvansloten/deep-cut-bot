@@ -34,6 +34,64 @@ def get_song(category):
   print(message)
   return message
 
+def get_gear(category):
+  json_response = requests.get(f"https://splatoon3.ink/data/gear.json").json()
+  now = datetime.now(ZoneInfo("Europe/London")).strftime("%Y-%m-%dT%H:%M:%SZ")
+  utc_time = timezone(timedelta(hours=0), name="UTC")
+
+  if category == "daily-drop":
+    for i in json_response["data"]["gesotown"]["pickupBrand"]:
+      if now <= i["saleEndTime"]:
+        end_time_utc = parser.parse(i["endTime"]).astimezone(utc_time)
+
+        message = f"** The Daily Drop: {i['brand']['name']} ** (until [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC)\n\n"
+
+        for i in i['brandGears']:
+          message += f"- {i['gear']['name']}: {i['gear']['primaryGearPower']['name']} ({i['price']})\n"
+
+  elif category == "on-sale":
+    message = f"** Gear on Sale Now **\n\n"
+
+    for i in json_response["data"]["gesotown"]["limitedGears"]:
+      if now <= i["saleEndTime"]:
+        end_time_utc = parser.parse(i["endTime"]).astimezone(utc_time)
+
+        for i in i['brandGears']:
+          message += "\n"
+          message += f"- {i['brand']['name']} {i['gear']['name']}: {i['gear']['primaryGearPower']['name']} ({i['price']})\n"
+          message += f"  _until [{datetime.strftime(i['saleEndTime'], '%d %b %H:%M')}](https://www.utctime.net) UTC_\n"
+
+  else:
+    message = "Invalid category selected."
+  
+  return message
+
+def get_splatfest():
+  json_response = requests.get(f"https://splatoon3.ink/data/festivals.json").json()
+  now = datetime.now(ZoneInfo("Europe/London")).strftime("%Y-%m-%dT%H:%M:%SZ")
+  utc_time = timezone(timedelta(hours=0), name="UTC")
+  
+  for i in json_response["US"]["data"]["festRecords"]["nodes"]:
+    if now <= i["endTime"] and now >= i["startTime"]:
+      start_time_utc = parser.parse(i["startTime"]).astimezone(utc_time)
+      end_time_utc = parser.parse(i["endTime"]).astimezone(utc_time)
+      
+      message = f"** {i['title']} ** ([{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC)\n\n"
+
+      for i in i["teams"]:
+        message += f"\n"
+        message += f"** Team {i['teamName']} **\n"
+
+        message += f"- Sneak Peek: {'{:.0%}'.format(i['result']['horagaiRatio'])}\n"
+        message += f"- Popularity: {'{:.0%}'.format(i['result']['voteRatio'])}\n"
+        message += f"- Regular Mode Clout: {'{:.0%}'.format(i['result']['regularContributionRatio'])}\n"
+        message += f"- Pro Mode Clout {'{:.0%}'.format(i['result']['challengeContributionRatio'])}\n"
+
+    else:
+      message = f"There is currently no Splatfest going on. Previous Splatfests:\n\n"
+   
+  return message
+
 def get_schedule(category):
   json_response = requests.get(f"https://splatoon3.ink/data/schedules.json").json()
   now = datetime.now(ZoneInfo("Europe/London")).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -141,6 +199,14 @@ async def x_battle(interaction):
 @tree.command(name = "league-battle", description = "Get the current League Battle rotation.")
 async def league_battle(interaction):
     await interaction.response.send_message(get_schedule("league-battle"), suppress_embeds=True)
+
+@tree.command(name = "daily-drop", description = "Get the current Daily Drop Gear.")
+async def daily_drop(interaction):
+    await interaction.response.send_message(get_gear("daily-drop"), suppress_embeds=True)
+
+@tree.command(name = "on-sale", description = "Get the current On Sale Gear.")
+async def on_sale(interaction):
+    await interaction.response.send_message(get_gear("daily-drop"), suppress_embeds=True)
 
 @client.event
 async def on_ready():
