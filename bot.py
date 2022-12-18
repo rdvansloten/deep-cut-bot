@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-TOKEN = "MTA1MzYzODM0OTc3ODMyNTUwNA.G9XFYb.PYvQK8cWOTXkMMYjs3eUpb5pygujDHGH42a15A"
 
 def get_song(category):
   songs = {
