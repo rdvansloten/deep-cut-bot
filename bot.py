@@ -62,14 +62,11 @@ def get_gear(category):
     for i in json_response["data"]["gesotown"]["limitedGears"]:
       
       if now <= i["saleEndTime"]:
-
-        print(round((parser.parse(i["saleEndTime"][:19]) - datetime.now()).total_seconds() / 3600))
-
         difference = parser.parse(i["saleEndTime"][:19]) - datetime.now()
-        difference.total_seconds() / 3600
-
+        hour_unit = "hours" if round(int(difference.total_seconds() / 3600)) > 1 else "hour"
+        
         message += " \n"
-        message += f"**{i['gear']['name']}**   _{round(int(difference.total_seconds() / 3600))} hours remaining_\n"
+        message += f"**{i['gear']['name']}**   _{round(int(difference.total_seconds() / 3600))} {hour_unit} remaining_\n"
         message += "```"
         message += f"Ability : {i['gear']['primaryGearPower']['name']}\n"
         message += f"Brand   : {i['gear']['brand']['name']}\n"
