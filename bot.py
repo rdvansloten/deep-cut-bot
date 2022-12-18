@@ -101,7 +101,7 @@ def get_splatfest():
         message += f"- Pro Mode Clout {'{:.0%}'.format(i['result']['challengeContributionRatio'])}\n"
 
     else:
-      message = f"There is currently no Splatfest going on. Previous Splatfests:\n\n"
+      message = f"There is currently no Splatfest going on. Please check back later."
    
   return message
 
@@ -220,6 +220,10 @@ async def daily_drop(interaction):
 @tree.command(name = "on-sale", description = "Get the current On Sale Gear.")
 async def on_sale(interaction):
     await interaction.response.send_message(get_gear("on-sale"), suppress_embeds=True)
+
+@tree.command(name = "splatfest", description = "Get the current Splatfest results.")
+async def splatfest(interaction):
+    await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
 
 @client.event
 async def on_ready():
