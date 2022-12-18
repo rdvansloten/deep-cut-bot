@@ -1,6 +1,7 @@
 # bot.py
 import requests
 import os
+import json
 from zoneinfo import ZoneInfo
 from datetime import datetime, timezone, timedelta
 from dateutil import parser
@@ -11,6 +12,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+TOKEN = "MTA1MzYzODM0OTc3ODMyNTUwNA.G9XFYb.PYvQK8cWOTXkMMYjs3eUpb5pygujDHGH42a15A"
 
 def get_song(category):
   songs = {
@@ -40,26 +42,41 @@ def get_gear(category):
   utc_time = timezone(timedelta(hours=0), name="UTC")
 
   if category == "daily-drop":
-    for i in json_response["data"]["gesotown"]["pickupBrand"]:
-      if now <= i["saleEndTime"]:
-        end_time_utc = parser.parse(i["endTime"]).astimezone(utc_time)
+    data = json_response["data"]["gesotown"]["pickupBrand"]
 
-        message = f"** The Daily Drop: {i['brand']['name']} ** (until [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC)\n\n"
+    if now <= data["saleEndTime"]:
+      end_time_utc = parser.parse(data["saleEndTime"]).astimezone(utc_time)
 
-        for i in i['brandGears']:
-          message += f"- {i['gear']['name']}: {i['gear']['primaryGearPower']['name']} ({i['price']})\n"
+      message = f"** The Daily Drop: {data['brand']['name']} **   _until [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC_\n"
+
+      for i in data['brandGears']:
+        message += " \n"
+        message += f"**{i['gear']['name']}** \n"
+        message += "```"
+        message += f"Ability : {i['gear']['primaryGearPower']['name']}\n"
+        message += f"Price   : {i['price']}\n"
+        message += f"```"
 
   elif category == "on-sale":
-    message = f"** Gear on Sale Now **\n\n"
-
+    message = f"** Gear on Sale Now **\n"
+    
     for i in json_response["data"]["gesotown"]["limitedGears"]:
+      
       if now <= i["saleEndTime"]:
-        end_time_utc = parser.parse(i["endTime"]).astimezone(utc_time)
 
-        for i in i['brandGears']:
-          message += "\n"
-          message += f"- {i['brand']['name']} {i['gear']['name']}: {i['gear']['primaryGearPower']['name']} ({i['price']})\n"
-          message += f"  _until [{datetime.strftime(i['saleEndTime'], '%d %b %H:%M')}](https://www.utctime.net) UTC_\n"
+        print(round((parser.parse(i["saleEndTime"][:19]) - datetime.now()).total_seconds() / 3600))
+
+        difference = parser.parse(i["saleEndTime"][:19]) - datetime.now()
+        difference.total_seconds() / 3600
+
+        message += " \n"
+        message += f"**{i['gear']['name']}**   _{round(int(difference.total_seconds() / 3600))} hours remaining_\n"
+        message += "```"
+        message += f"Ability : {i['gear']['primaryGearPower']['name']}\n"
+        message += f"Brand   : {i['gear']['brand']['name']}\n"
+        message += f"Price   : {i['price']}\n"
+        message += f"```"
+        # message += f"  _{round(int(difference.total_seconds() / 3600))} hours remaining_\n"
 
   else:
     message = "Invalid category selected."
@@ -206,7 +223,7 @@ async def daily_drop(interaction):
 
 @tree.command(name = "on-sale", description = "Get the current On Sale Gear.")
 async def on_sale(interaction):
-    await interaction.response.send_message(get_gear("daily-drop"), suppress_embeds=True)
+    await interaction.response.send_message(get_gear("on-sale"), suppress_embeds=True)
 
 @client.event
 async def on_ready():
