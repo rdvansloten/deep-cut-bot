@@ -46,7 +46,7 @@ def get_gear(category):
     if now <= data["saleEndTime"]:
       end_time_utc = parser.parse(data["saleEndTime"]).astimezone(utc_time)
 
-      message = f"** The Daily Drop: {data['brand']['name']} **   _until [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC_\n"
+      message = f"**THE DAILY DROP:** {data['brand']['name']}   _until [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC_\n"
 
       for i in data['brandGears']:
         message += " \n"
@@ -57,7 +57,7 @@ def get_gear(category):
         message += f"```"
 
   elif category == "on-sale":
-    message = f"** Gear on Sale Now **\n"
+    message = f"** GEAR ON SALE NOW **\n"
     
     for i in json_response["data"]["gesotown"]["limitedGears"]:
       
@@ -89,11 +89,11 @@ def get_splatfest():
       start_time_utc = parser.parse(i["startTime"]).astimezone(utc_time)
       end_time_utc = parser.parse(i["endTime"]).astimezone(utc_time)
       
-      message = f"** {i['title']} ** ([{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC)\n\n"
+      message = f"** {i['title'].upper()} ** ([{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC)\n\n"
 
       for i in i["teams"]:
         message += f"\n"
-        message += f"** Team {i['teamName']} **\n"
+        message += f"** TEAM {i['teamName'].upper()} **\n"
 
         message += f"- Sneak Peek: {'{:.0%}'.format(i['result']['horagaiRatio'])}\n"
         message += f"- Popularity: {'{:.0%}'.format(i['result']['voteRatio'])}\n"
