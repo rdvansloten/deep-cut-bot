@@ -30,7 +30,7 @@ def get_schedule_time(category, end_time, start_time=""):
       time_remaining = f"{round(int(difference.total_seconds() / 3600))} hours remaining"
 
   elif category == "range" and start_time and end_time:
-    time_remaining = f"from [{datetime.strftime(start_time, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time, '%d %b %H:%M')}](https://www.utctime.net) UTC"
+    time_remaining = f"From [{datetime.strftime(start_time, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time, '%d %b %H:%M')}](https://www.utctime.net) UTC"
 
   else:
     time_remaining = f"No valid category assigned, or start/end time are not set properly."
@@ -84,7 +84,7 @@ def get_gear(category):
     for i in json_response["data"]["gesotown"]["limitedGears"]:
       if now <= i["saleEndTime"]:
         message += " \n"
-        message += f"**[{i['gear']['name']}](https://splatoonwiki.org/wiki/{i['gear']['name'].replace(' ', '_')})**   _{get_schedule_time(category='ends', end_time=data['saleEndTime'])}_\n"
+        message += f"**[{i['gear']['name']}](https://splatoonwiki.org/wiki/{i['gear']['name'].replace(' ', '_')})**   _{get_schedule_time(category='ends', end_time=i['saleEndTime'])}_\n"
         message += "```"
         message += f"Ability : {i['gear']['primaryGearPower']['name']}\n"
         message += f"Brand   : {i['gear']['brand']['name']}\n"
@@ -98,7 +98,6 @@ def get_gear(category):
 def get_splatfest():
   json_response = requests.get(f"https://splatoon3.ink/data/festivals.json").json()
   now = datetime.now(ZoneInfo("Europe/London")).strftime("%Y-%m-%dT%H:%M:%SZ")
-  utc_time = timezone(timedelta(hours=0), name="UTC")
   
   for i in json_response["US"]["data"]["festRecords"]["nodes"]:
     if now <= i["endTime"] and now >= i["startTime"]:      
@@ -126,8 +125,8 @@ def get_schedule(category):
   if category == "salmon-run":
     for i in json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"]:
       if now <= i["endTime"] and now >= i["startTime"]:
-        message = f"**SALMON RUN**   _{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}_\n"
-        message += f"{get_schedule_time(category='range', end_time=i['endTime'])}\n\n"
+        message = f"**SALMON RUN**   _{get_schedule_time(category='ends', end_time=i['endTime'])}_\n"
+        message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
         message += f"** {i['setting']['coopStage']['name']}: **\n"
         for i in i["setting"]["weapons"]:
           message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
@@ -156,7 +155,7 @@ def get_schedule(category):
     for i in json_response["data"]["xSchedules"]["nodes"]:
        if now <= i["endTime"] and now >= i["startTime"]:
         message = f"**X BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime'])}_\n"
-        message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n"
+        message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
 
         message += f"** {i['xMatchSetting']['vsRule']['name']}: **\n"
         for i in i['xMatchSetting']['vsStages']:
@@ -174,7 +173,7 @@ def get_schedule(category):
   elif category == "regular-battle":
     for i in json_response["data"]["regularSchedules"]["nodes"]:
        if now <= i["endTime"] and now >= i["startTime"]:
-        message = f"**ANARCHY BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime'])}_\n"
+        message = f"**REGULAR BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime'])}_\n"
         message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
         message += f"** {i['regularMatchSetting']['vsRule']['name']}: **\n"
         for i in i['regularMatchSetting']['vsStages']:
