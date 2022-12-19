@@ -13,7 +13,7 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-def get_schedule_time(category, start_time, end_time):
+def get_schedule_time(category, end_time, start_time=""):
   if category == "ends" and end_time:
     difference = parser.parse(end_time[:19]) - datetime.now()
 
@@ -99,7 +99,7 @@ def get_splatfest():
   
   for i in json_response["US"]["data"]["festRecords"]["nodes"]:
     if now <= i["endTime"] and now >= i["startTime"]:      
-      message = f"** {i['title'].upper()} ** ({get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
+      message = f"**{i['title'].upper()}** ({get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
 
       for i in i["teams"]:
         message += f"\n"
