@@ -13,6 +13,21 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
+def get_time_remaining(end_time):
+  difference = parser.parse(end_time[:19]) - datetime.now()
+
+  if round(int(difference.total_seconds() / 3600)) == 0:
+    time_remaining = f"{round(int(difference.total_seconds() / 3600))} minutes remaining"
+
+
+  elif round(int(difference.total_seconds() / 3600)) == 1:
+    time_remaining = f"{round(int(difference.total_seconds() / 3600))} hour remaining"
+
+  else:
+    time_remaining = f"{round(int(difference.total_seconds() / 3600))} hours remaining"
+
+  return time_remaining
+  
 def get_song(category):
   songs = {
     'Til Depth Do Us Part':'https://www.youtube.com/watch?v=lw1XwyW39uk', 
@@ -45,11 +60,7 @@ def get_gear(category):
 
     if now <= data["saleEndTime"]:
       end_time_utc = parser.parse(data["saleEndTime"]).astimezone(utc_time)
-      difference = parser.parse(data["saleEndTime"][:19]) - datetime.now()
-      hour_unit = "hours" if round(int(difference.total_seconds() / 3600)) != 1 else "hour"
-      time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
-
-      message = f"**THE DAILY DROP: {data['brand']['name']}**   _{time_remaining} remaining_\n"
+      message = f"**THE DAILY DROP: {data['brand']['name']}**   _{get_time_remaining(data['saleEndTime'])}_\n"
       message += f"Until [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n"
 
       for i in data['brandGears']:
@@ -66,12 +77,8 @@ def get_gear(category):
     for i in json_response["data"]["gesotown"]["limitedGears"]:
       
       if now <= i["saleEndTime"]:
-        difference = parser.parse(i["saleEndTime"][:19]) - datetime.now()
-        hour_unit = "hours" if round(int(difference.total_seconds() / 3600)) != 1 else "hour"
-        time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
-
         message += " \n"
-        message += f"**[{i['gear']['name']}](https://splatoonwiki.org/wiki/{i['gear']['name'].replace(' ', '_')})**   _{time_remaining} remaining_\n"
+        message += f"**[{i['gear']['name']}](https://splatoonwiki.org/wiki/{i['gear']['name'].replace(' ', '_')})**   _{get_time_remaining(i['saleEndTime'])}_\n"
         message += "```"
         message += f"Ability : {i['gear']['primaryGearPower']['name']}\n"
         message += f"Brand   : {i['gear']['brand']['name']}\n"
@@ -119,12 +126,8 @@ def get_schedule(category):
       if now <= i["endTime"] and now >= i["startTime"]:
         start_time_utc = parser.parse(i["startTime"]).astimezone(utc_time)
         end_time_utc = parser.parse(i["endTime"]).astimezone(utc_time)
-        
-        difference = parser.parse(i["endTime"][:19]) - datetime.now()
-        hour_unit = "hours" if round(int(difference.total_seconds() / 3600)) != 1 else "hour"
-        time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
 
-        message = f"**SALMON RUN**   _{time_remaining} remaining_\n"
+        message = f"**SALMON RUN**   _{get_time_remaining(i['endTime'])}_\n"
         message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n\n"
         message += f"** {i['setting']['coopStage']['name']}: **\n"
         for i in i["setting"]["weapons"]:
@@ -136,11 +139,7 @@ def get_schedule(category):
         start_time_utc = parser.parse(i["startTime"]).astimezone(utc_time)
         end_time_utc = parser.parse(i["endTime"]).astimezone(utc_time)
 
-        difference = parser.parse(i["endTime"][:19]) - datetime.now()
-        hour_unit = "hours" if round(int(difference.total_seconds() / 3600)) != 1 else "hour"
-        time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
-
-        message = f"**ANARCHY BATTLE**   _{time_remaining} remaining_\n"
+        message = f"**ANARCHY BATTLE**   _{get_time_remaining(i['endTime'])}_\n"
         message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n"
 
         for i in i['bankaraMatchSettings']:
@@ -163,11 +162,7 @@ def get_schedule(category):
         start_time_utc = parser.parse(i["startTime"]).astimezone(utc_time)
         end_time_utc = parser.parse(i["endTime"]).astimezone(utc_time)
 
-        difference = parser.parse(i["endTime"][:19]) - datetime.now()
-        hour_unit = "hours" if round(int(difference.total_seconds() / 3600)) != 1 else "hour"
-        time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
-
-        message = f"**X BATTLE**   _{time_remaining} remaining_\n"
+        message = f"**X BATTLE**   _{get_time_remaining(i['endTime'])}_\n"
         message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n\n"
         message += f"** {i['xMatchSetting']['vsRule']['name']}: **\n"
         for i in i['xMatchSetting']['vsStages']:
@@ -179,11 +174,7 @@ def get_schedule(category):
         start_time_utc = parser.parse(i["startTime"]).astimezone(utc_time)
         end_time_utc = parser.parse(i["endTime"]).astimezone(utc_time)
 
-        difference = parser.parse(i["endTime"][:19]) - datetime.now()
-        hour_unit = "hours" if round(int(difference.total_seconds() / 3600)) != 1 else "hour"
-        time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
-
-        message = f"**LEAGUE BATTLE**   _{time_remaining} remaining_\n"
+        message = f"**LEAGUE BATTLE**   _{get_time_remaining(i['endTime'])}_\n"
         message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n\n"
         
         message += f"** {i['leagueMatchSetting']['vsRule']['name']}: **\n"
@@ -196,11 +187,7 @@ def get_schedule(category):
         start_time_utc = parser.parse(i["startTime"]).astimezone(utc_time)
         end_time_utc = parser.parse(i["endTime"]).astimezone(utc_time)
 
-        difference = parser.parse(i["endTime"][:19]) - datetime.now()
-        hour_unit = "hours" if round(int(difference.total_seconds() / 3600)) != 1 else "hour"
-        time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
-
-        message = f"**REGULAR BATTLE**   _{time_remaining} remaining_\n"
+        message = f"**REGULAR BATTLE**   _{get_time_remaining(i['endTime'])}_\n"
         message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n\n"
         message += f"** {i['regularMatchSetting']['vsRule']['name']}: **\n"
         for i in i['regularMatchSetting']['vsStages']:
