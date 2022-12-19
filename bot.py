@@ -15,10 +15,10 @@ TOKEN = os.getenv('DISCORD_TOKEN')
 
 def get_schedule_time(category, end_time, start_time=""):
   start_time = "" if not start_time else parser.parse(start_time).astimezone(timezone(timedelta(hours=0), name="UTC"))
-  end_time = "" if not end_time else parser.parse(end_time).astimezone(timezone(timedelta(hours=0), name="UTC"))
+  end_time = "" if not end_time else parser.parse(end_time[:19]).astimezone(timezone(timedelta(hours=0), name="UTC"))
   
   if category == "ends" and end_time:
-    difference = end_time[:19] - datetime.now()
+    difference = end_time - datetime.now()
 
     if round(int(difference.total_seconds() / 3600)) == 0:
       time_remaining = f"{round(int(difference.total_seconds() / 60))} minutes remaining"
