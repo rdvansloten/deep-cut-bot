@@ -24,10 +24,10 @@ def get_schedule_time(category, end_time, start_time=""):
       time_remaining = f"{round(int(difference.total_seconds() / 60))} minutes remaining"
 
     elif round(int(difference.total_seconds() / 3600)) == 1:
-      time_remaining = f"{round(int(difference.total_seconds() / 3600))} hour remaining"
+      time_remaining = f"{round(int(difference.total_seconds() / 3600))} hour and {round(int(difference.total_seconds() / 60))} minutes remaining"
 
     else:
-      time_remaining = f"{round(int(difference.total_seconds() / 3600))} hours remaining"
+      time_remaining = f"{round(int(difference.total_seconds() / 3600))} hours and {round(int(difference.total_seconds() / 60))} minutes remaining"
 
   elif category == "range" and start_time and end_time:
     time_remaining = f"From [{datetime.strftime(start_time, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time, '%d %b %H:%M')}](https://www.utctime.net) UTC"
