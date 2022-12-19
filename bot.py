@@ -54,7 +54,7 @@ def get_gear(category):
 
       for i in data['brandGears']:
         message += " \n"
-        message += f"**[{i['gear']['name']}](https://splatoonwiki.org/wiki/{i['gear']['name']})** \n"
+        message += f"**[{i['gear']['name']}](https://splatoonwiki.org/wiki/{i['gear']['name'].replace(' ', '_')})** \n"
         message += "```"
         message += f"Ability : {i['gear']['primaryGearPower']['name']}\n"
         message += f"Price   : {i['price']}\n"
@@ -71,7 +71,7 @@ def get_gear(category):
         time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
 
         message += " \n"
-        message += f"**[{i['gear']['name']}](https://splatoonwiki.org/wiki/{i['gear']['name']})**   _{time_remaining} remaining_\n"
+        message += f"**[{i['gear']['name']}](https://splatoonwiki.org/wiki/{i['gear']['name'].replace(' ', '_')})**   _{time_remaining} remaining_\n"
         message += "```"
         message += f"Ability : {i['gear']['primaryGearPower']['name']}\n"
         message += f"Brand   : {i['gear']['brand']['name']}\n"
