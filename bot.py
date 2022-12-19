@@ -45,7 +45,7 @@ def get_gear(category):
 
     if now <= data["saleEndTime"]:
       end_time_utc = parser.parse(data["saleEndTime"]).astimezone(utc_time)
-      difference = parser.parse(i["endTime"][:19]) - datetime.now()
+      difference = parser.parse(data["saleEndTime"][:19]) - datetime.now()
       hour_unit = "hours" if round(int(difference.total_seconds() / 3600)) != 1 else "hour"
       time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
 
