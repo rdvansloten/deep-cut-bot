@@ -13,17 +13,24 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
-def get_time_remaining(end_time):
-  difference = parser.parse(end_time[:19]) - datetime.now()
+def get_schedule_time(category, start_time, end_time):
+  if category == "ends" and end_time:
+    difference = parser.parse(end_time[:19]) - datetime.now()
 
-  if round(int(difference.total_seconds() / 3600)) == 0:
-    time_remaining = f"{round(int(difference.total_seconds() / 60))} minutes remaining"
+    if round(int(difference.total_seconds() / 3600)) == 0:
+      time_remaining = f"{round(int(difference.total_seconds() / 60))} minutes remaining"
 
-  elif round(int(difference.total_seconds() / 3600)) == 1:
-    time_remaining = f"{round(int(difference.total_seconds() / 3600))} hour remaining"
+    elif round(int(difference.total_seconds() / 3600)) == 1:
+      time_remaining = f"{round(int(difference.total_seconds() / 3600))} hour remaining"
+
+    else:
+      time_remaining = f"{round(int(difference.total_seconds() / 3600))} hours remaining"
+
+  elif category == "range" and start_time and end_time:
+    time_remaining = f"from [{datetime.strftime(start_time, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time, '%d %b %H:%M')}](https://www.utctime.net) UTC"
 
   else:
-    time_remaining = f"{round(int(difference.total_seconds() / 3600))} hours remaining"
+    time_remaining = f"No valid category assigned, or start/end time are not set properly."
 
   return time_remaining
   
@@ -58,9 +65,7 @@ def get_gear(category):
     data = json_response["data"]["gesotown"]["pickupBrand"]
 
     if now <= data["saleEndTime"]:
-      end_time_utc = parser.parse(data["saleEndTime"]).astimezone(utc_time)
-      message = f"**THE DAILY DROP: {data['brand']['name']}**   _{get_time_remaining(data['saleEndTime'])}_\n"
-      message += f"Until [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n"
+      message = f"**THE DAILY DROP: {data['brand']['name']}**   _{get_schedule_time(category='ends', end_time=data['saleEndTime'])}_\n"
 
       for i in data['brandGears']:
         message += " \n"
@@ -74,16 +79,14 @@ def get_gear(category):
     message = f"**GEAR ON SALE NOW**\n"
     
     for i in json_response["data"]["gesotown"]["limitedGears"]:
-      
       if now <= i["saleEndTime"]:
         message += " \n"
-        message += f"**[{i['gear']['name']}](https://splatoonwiki.org/wiki/{i['gear']['name'].replace(' ', '_')})**   _{get_time_remaining(i['saleEndTime'])}_\n"
+        message += f"**[{i['gear']['name']}](https://splatoonwiki.org/wiki/{i['gear']['name'].replace(' ', '_')})**   _{get_schedule_time(category='ends', end_time=data['saleEndTime'])}_\n"
         message += "```"
         message += f"Ability : {i['gear']['primaryGearPower']['name']}\n"
         message += f"Brand   : {i['gear']['brand']['name']}\n"
         message += f"Price   : {i['price']}\n"
         message += f"```"
-
   else:
     message = "Invalid category selected."
   
@@ -95,11 +98,8 @@ def get_splatfest():
   utc_time = timezone(timedelta(hours=0), name="UTC")
   
   for i in json_response["US"]["data"]["festRecords"]["nodes"]:
-    if now <= i["endTime"] and now >= i["startTime"]:
-      start_time_utc = parser.parse(i["startTime"]).astimezone(utc_time)
-      end_time_utc = parser.parse(i["endTime"]).astimezone(utc_time)
-      
-      message = f"** {i['title'].upper()} ** ([{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC)\n\n"
+    if now <= i["endTime"] and now >= i["startTime"]:      
+      message = f"** {i['title'].upper()} ** ({get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
 
       for i in i["teams"]:
         message += f"\n"
@@ -123,11 +123,8 @@ def get_schedule(category):
   if category == "salmon-run":
     for i in json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"]:
       if now <= i["endTime"] and now >= i["startTime"]:
-        start_time_utc = parser.parse(i["startTime"]).astimezone(utc_time)
-        end_time_utc = parser.parse(i["endTime"]).astimezone(utc_time)
-
-        message = f"**SALMON RUN**   _{get_time_remaining(i['endTime'])}_\n"
-        message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n\n"
+        message = f"**SALMON RUN**   _{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}_\n"
+        message += f"{get_schedule_time(category='range', end_time=i['endTime'])}\n\n"
         message += f"** {i['setting']['coopStage']['name']}: **\n"
         for i in i["setting"]["weapons"]:
           message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
@@ -135,11 +132,8 @@ def get_schedule(category):
   elif category == "anarchy-battle":
     for i in json_response["data"]["bankaraSchedules"]["nodes"]:
        if now <= i["endTime"] and now >= i["startTime"]:
-        start_time_utc = parser.parse(i["startTime"]).astimezone(utc_time)
-        end_time_utc = parser.parse(i["endTime"]).astimezone(utc_time)
-
-        message = f"**ANARCHY BATTLE**   _{get_time_remaining(i['endTime'])}_\n"
-        message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n"
+        message = f"**ANARCHY BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime'])}_\n"
+        message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n"
 
         for i in i['bankaraMatchSettings']:
           if i['mode'] == "CHALLENGE":
@@ -158,11 +152,9 @@ def get_schedule(category):
   elif category == "x-battle":
     for i in json_response["data"]["xSchedules"]["nodes"]:
        if now <= i["endTime"] and now >= i["startTime"]:
-        start_time_utc = parser.parse(i["startTime"]).astimezone(utc_time)
-        end_time_utc = parser.parse(i["endTime"]).astimezone(utc_time)
+        message = f"**X BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime'])}_\n"
+        message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n"
 
-        message = f"**X BATTLE**   _{get_time_remaining(i['endTime'])}_\n"
-        message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n\n"
         message += f"** {i['xMatchSetting']['vsRule']['name']}: **\n"
         for i in i['xMatchSetting']['vsStages']:
           message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
@@ -170,12 +162,8 @@ def get_schedule(category):
   elif category == "league-battle":
     for i in json_response["data"]["leagueSchedules"]["nodes"]:
        if now <= i["endTime"] and now >= i["startTime"]:
-        start_time_utc = parser.parse(i["startTime"]).astimezone(utc_time)
-        end_time_utc = parser.parse(i["endTime"]).astimezone(utc_time)
-
-        message = f"**LEAGUE BATTLE**   _{get_time_remaining(i['endTime'])}_\n"
-        message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n\n"
-        
+        message = f"**LEAGUE BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime'])}_\n"
+        message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
         message += f"** {i['leagueMatchSetting']['vsRule']['name']}: **\n"
         for i in i['leagueMatchSetting']['vsStages']:
           message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
@@ -183,11 +171,8 @@ def get_schedule(category):
   elif category == "regular-battle":
     for i in json_response["data"]["regularSchedules"]["nodes"]:
        if now <= i["endTime"] and now >= i["startTime"]:
-        start_time_utc = parser.parse(i["startTime"]).astimezone(utc_time)
-        end_time_utc = parser.parse(i["endTime"]).astimezone(utc_time)
-
-        message = f"**REGULAR BATTLE**   _{get_time_remaining(i['endTime'])}_\n"
-        message += f"From [{datetime.strftime(start_time_utc, '%d %b %H:%M')}](https://www.utctime.net) to [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n\n"
+        message = f"**ANARCHY BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime'])}_\n"
+        message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
         message += f"** {i['regularMatchSetting']['vsRule']['name']}: **\n"
         for i in i['regularMatchSetting']['vsStages']:
           message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
