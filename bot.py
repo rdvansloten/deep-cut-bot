@@ -17,8 +17,7 @@ def get_time_remaining(end_time):
   difference = parser.parse(end_time[:19]) - datetime.now()
 
   if round(int(difference.total_seconds() / 3600)) == 0:
-    time_remaining = f"{round(int(difference.total_seconds() / 3600))} minutes remaining"
-
+    time_remaining = f"{round(int(difference.total_seconds() / 60))} minutes remaining"
 
   elif round(int(difference.total_seconds() / 3600)) == 1:
     time_remaining = f"{round(int(difference.total_seconds() / 3600))} hour remaining"
