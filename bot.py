@@ -50,7 +50,7 @@ def get_gear(category):
       time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
 
       message = f"**THE DAILY DROP: {data['brand']['name']}**   _{time_remaining} remaining_\n"
-      message += f"Until [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n\n"
+      message += f"Until [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n"
 
       for i in data['brandGears']:
         message += " \n"
