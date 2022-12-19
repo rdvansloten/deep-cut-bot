@@ -49,12 +49,12 @@ def get_gear(category):
       hour_unit = "hours" if round(int(difference.total_seconds() / 3600)) != 1 else "hour"
       time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
 
-      message = f"**THE DAILY DROP:  {data['brand']['name']}**   _{time_remaining} remaining_\n"
+      message = f"**THE DAILY DROP: {data['brand']['name']}**   _{time_remaining} remaining_\n"
       message += f"Until [{datetime.strftime(end_time_utc, '%d %b %H:%M')}](https://www.utctime.net) UTC\n\n"
 
       for i in data['brandGears']:
         message += " \n"
-        message += f"**{i['gear']['name']}** \n"
+        message += f"**[{i['gear']['name']}](https://splatoonwiki.org/wiki/{i['gear']['name']})** \n"
         message += "```"
         message += f"Ability : {i['gear']['primaryGearPower']['name']}\n"
         message += f"Price   : {i['price']}\n"
@@ -71,7 +71,7 @@ def get_gear(category):
         time_remaining = "less than 1 hour" if round(int(difference.total_seconds() / 3600)) < 1 else f"{round(int(difference.total_seconds() / 3600))} {hour_unit}"
 
         message += " \n"
-        message += f"**{i['gear']['name']}**   _{time_remaining} remaining_\n"
+        message += f"**[{i['gear']['name']}](https://splatoonwiki.org/wiki/{i['gear']['name']})**   _{time_remaining} remaining_\n"
         message += "```"
         message += f"Ability : {i['gear']['primaryGearPower']['name']}\n"
         message += f"Brand   : {i['gear']['brand']['name']}\n"
