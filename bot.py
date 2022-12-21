@@ -244,7 +244,7 @@ async def on_sale(interaction):
 async def splatfest(interaction):
     await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
 
-@client.command(name='salmon-run-beta', aliases=['srb'])
+@tree.command(name='salmon-run-beta', aliases=['srb'])
 async def salmon_run_beta(interaction, subcommand: str):
   if subcommand == 'upcoming':
     # code to display upcoming Salmon Run events
