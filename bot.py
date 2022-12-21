@@ -246,12 +246,18 @@ async def on_sale(interaction):
 async def splatfest(interaction):
     await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
 
-@tree.command(name='upcoming', description="Get upcoming schedule for Salmon Run.")
-async def salmon_run_beta(interaction, type: str):
-  if type == "salmon-run":
-    await interaction.response.send_message(get_schedule(category="salmon-run", which="upcoming"), suppress_embeds=True)
-  else:
-    await interaction.response.send_message('Invalid subcommand. Please use "salmon-run".')
+# @tree.command()
+# async def mycommand(interaction):
+#   await interaction.response.send_message('Invalid subcommand. Please use "salmon-run".')
+
+# mycommand.add_command(subcommand, help="This is a detailed description of the subcommand")
+
+# @tree.command(name='upcoming', description="Get upcoming schedule for Salmon Run.")
+# async def salmon_run_beta(interaction, mode: str):
+#   if mode:
+#     await interaction.response.send_message(get_schedule(category=mode, which="upcoming"), suppress_embeds=True)
+#   else:
+#     await interaction.response.send_message('Invalid subcommand. Please use "salmon-run".')
 
 @client.event
 async def on_ready():
