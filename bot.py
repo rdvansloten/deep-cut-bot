@@ -123,6 +123,8 @@ def get_schedule(category, which=""):
   # utc_time = timezone(timedelta(hours=0), name="UTC")
   
   if category == "salmon-run":
+    salmon_run_schedule = json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"][0]
+
     if which == "upcoming":
       message = f"**SALMON RUN (UPCOMING)**\n"
       message += f"{get_schedule_time(category='range', start_time=salmon_run_schedule['startTime'], end_time=salmon_run_schedule['endTime'])}\n\n"
@@ -131,8 +133,6 @@ def get_schedule(category, which=""):
         message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
 
     elif which == "":
-      salmon_run_schedule = json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"][0]
-
       message = f"**SALMON RUN**   _{get_schedule_time(category='ends', end_time=salmon_run_schedule['endTime'])}_\n"
       message += f"{get_schedule_time(category='range', start_time=salmon_run_schedule['startTime'], end_time=salmon_run_schedule['endTime'])}\n\n"
       message += f"** {salmon_run_schedule['setting']['coopStage']['name']}: **\n"
@@ -244,7 +244,7 @@ async def on_sale(interaction):
 async def splatfest(interaction):
     await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
 
-@tree.command(name='salmon-run-beta')
+@tree.command(name='salmon-run-beta', description="Get current or upcoming Salmon Run schedule.")
 async def salmon_run_beta(interaction, subcommand: str):
   if subcommand == "" or subcommand =="upcoming":
     get_schedule(category="salmon-run", which=subcommand)
