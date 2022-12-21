@@ -244,13 +244,9 @@ async def on_sale(interaction):
 async def splatfest(interaction):
     await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
 
-@tree.group(name = "test-group", description = "Bla.")
-async def parent_command(interaction):
-  pass
-
-@parent_command.command(name = "child1", description="child1")
-async def subcommand(interaction):
-    await interaction.response.send_message("This is child 1.")
+@tree.command()
+async def test(ctx, arg):
+    await ctx.send(arg)
 
 @client.event
 async def on_ready():
