@@ -247,8 +247,7 @@ async def splatfest(interaction):
 @tree.command(name='upcoming', description="Get upcoming schedule for Salmon Run.")
 async def salmon_run_beta(interaction, type: str):
   if type == "salmon-run":
-    get_schedule(category="salmon-run", which="upcoming")
-    pass
+    await interaction.response.send_message(get_schedule(category="salmon-run", which="upcoming"), suppress_embeds=True)
   else:
     await interaction.response.send_message('Invalid subcommand. Please use "salmon-run".')
 
