@@ -244,9 +244,16 @@ async def on_sale(interaction):
 async def splatfest(interaction):
     await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
 
-@tree.command()
-async def test(ctx, arg):
-    await ctx.send(arg)
+@client.command(name='salmon-run-beta', aliases=['srb'])
+async def salmon_run_beta(interaction, subcommand: str):
+  if subcommand == 'upcoming':
+    # code to display upcoming Salmon Run events
+    pass
+  elif subcommand == 'current':
+    # code to display current Salmon Run event
+    pass
+  else:
+    await interaction.send('Invalid subcommand. Please use "upcoming" or "current".')
 
 @client.event
 async def on_ready():
