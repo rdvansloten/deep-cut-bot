@@ -117,27 +117,27 @@ def get_splatfest():
    
   return message
 
-def get_schedule(category, *args=""):
+def get_schedule(category):
   json_response = requests.get(f"https://splatoon3.ink/data/schedules.json").json()
   now = datetime.now(ZoneInfo("Europe/London")).strftime("%Y-%m-%dT%H:%M:%SZ")
   utc_time = timezone(timedelta(hours=0), name="UTC")
   
   if category == "salmon-run":
-    if args == "upcoming" or args == "":
-      message = f"**SALMON RUN (UPCOMING)**\n"
-      message += f"{get_schedule_time(category='range', start_time=salmon_run_schedule['startTime'], end_time=salmon_run_schedule['endTime'])}\n\n"
-      message += f"** {salmon_run_schedule['setting']['coopStage']['name']}: **\n"
-      for i in salmon_run_schedule["setting"]["weapons"]:
-        message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
+  #   if args == "upcoming" or args == "":
+  #     message = f"**SALMON RUN (UPCOMING)**\n"
+  #     message += f"{get_schedule_time(category='range', start_time=salmon_run_schedule['startTime'], end_time=salmon_run_schedule['endTime'])}\n\n"
+  #     message += f"** {salmon_run_schedule['setting']['coopStage']['name']}: **\n"
+  #     for i in salmon_run_schedule["setting"]["weapons"]:
+  #       message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
 
-    elif args == "current":
-      salmon_run_schedule = json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"][0]
+    # elif args == "current":
+    salmon_run_schedule = json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"][0]
 
-      message = f"**SALMON RUN**   _{get_schedule_time(category='ends', end_time=salmon_run_schedule['endTime'])}_\n"
-      message += f"{get_schedule_time(category='range', start_time=salmon_run_schedule['startTime'], end_time=salmon_run_schedule['endTime'])}\n\n"
-      message += f"** {salmon_run_schedule['setting']['coopStage']['name']}: **\n"
-      for i in salmon_run_schedule["setting"]["weapons"]:
-        message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
+    message = f"**SALMON RUN**   _{get_schedule_time(category='ends', end_time=salmon_run_schedule['endTime'])}_\n"
+    message += f"{get_schedule_time(category='range', start_time=salmon_run_schedule['startTime'], end_time=salmon_run_schedule['endTime'])}\n\n"
+    message += f"** {salmon_run_schedule['setting']['coopStage']['name']}: **\n"
+    for i in salmon_run_schedule["setting"]["weapons"]:
+      message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
 
     # for i in json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"]:
     #   if now <= i["endTime"] and now >= i["startTime"]:
@@ -216,14 +216,9 @@ async def songs(interaction):
 async def regular_battle(interaction):
     await interaction.response.send_message(get_schedule("regular-battle"), suppress_embeds=True)
 
-# @tree.command(name = "salmon-run", description = "Get the current Salmon Run rotation.")
-# async def salmon_run(interaction):
-#     await interaction.response.send_message(get_schedule("salmon-run"), suppress_embeds=True)
-
 @tree.command(name = "salmon-run", description = "Get the current Salmon Run rotation.")
-async def salmon_run(interaction, *args):
-    result = get_schedule(category="salmon-run", *args)
-    await interaction.response.send_message(result)
+async def salmon_run(interaction):
+    await interaction.response.send_message(get_schedule("salmon-run"), suppress_embeds=True)
 
 @tree.command(name = "anarchy-battle", description = "Get the current Anarchy Battle rotation.")
 async def anarchy_battle(interaction):
@@ -248,6 +243,14 @@ async def on_sale(interaction):
 @tree.command(name = "splatfest", description = "Get the current Splatfest results.")
 async def splatfest(interaction):
     await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
+
+@tree.group(name = "test-group", description = "Bla.")
+async def parent_command(interaction):
+  pass
+
+@parent_command.command(name = "child1", description="child1")
+async def subcommand(interaction):
+    await interaction.response.send_message("This is child 1.")
 
 @client.event
 async def on_ready():
