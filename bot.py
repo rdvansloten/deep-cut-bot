@@ -253,7 +253,7 @@ async def salmon_run_beta(interaction, subcommand: str):
     # code to display current Salmon Run event
     pass
   else:
-    await interaction.send('Invalid subcommand. Please use "upcoming" or "current".')
+    await interaction.response.send_message('Invalid subcommand. Please use "upcoming" or "current".')
 
 @client.event
 async def on_ready():
