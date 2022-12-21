@@ -222,7 +222,7 @@ async def regular_battle(interaction):
 
 @tree.command(name = "salmon-run", description = "Get the current Salmon Run rotation.")
 async def salmon_run(interaction, which):
-    result = get_schedule(category="salmon-run", which)
+    result = get_schedule(category="salmon-run", which=which)
     await interaction.response.send_message(result)
 
 @tree.command(name = "anarchy-battle", description = "Get the current Anarchy Battle rotation.")
