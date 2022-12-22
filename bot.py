@@ -120,11 +120,11 @@ def get_schedule(category, period=""):
   now = datetime.now(ZoneInfo("Europe/London")).strftime("%Y-%m-%dT%H:%M:%SZ")
   
   instance = 1 if period == "next" else 0
-  when = "(NEXT)" if period == "next" else ""
+  when = "**(NEXT)**" if period == "next" else ""
     
   if category == "salmon-run":
     salmon_run_schedule = json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"][instance]
-    message = f"**SALMON RUN {when}**   {'_'+get_schedule_time(category='ends', end_time=salmon_run_schedule['endTime'])+'_' if period == 'now' else ''}\n"
+    message = f"**SALMON RUN {when}**   {'_'+get_schedule_time(category='ends', end_time=salmon_run_schedule['endTime'])+'_' if period == 'now' else when}\n"
     message += f"{get_schedule_time(category='range', start_time=salmon_run_schedule['startTime'], end_time=salmon_run_schedule['endTime'])}\n\n"
     message += f"** {salmon_run_schedule['setting']['coopStage']['name']}: **\n"
     for i in salmon_run_schedule["setting"]["weapons"]:
@@ -135,7 +135,7 @@ def get_schedule(category, period=""):
 
   elif category == "anarchy-battle":
     anarchy_battle_schedule = json_response["data"]["bankaraSchedules"]["nodes"][instance]
-    message = f"**ANARCHY BATTLE**   {'_'+get_schedule_time(category='ends', end_time=anarchy_battle_schedule['endTime'])+'_' if period == 'now' else ''}\n"
+    message = f"**ANARCHY BATTLE**   {'_'+get_schedule_time(category='ends', end_time=anarchy_battle_schedule['endTime'])+'_' if period == 'now' else when}\n"
     message += f"{get_schedule_time(category='range', start_time=anarchy_battle_schedule['startTime'], end_time=anarchy_battle_schedule['endTime'])}\n"
 
     for i in anarchy_battle_schedule['bankaraMatchSettings']:
@@ -147,7 +147,7 @@ def get_schedule(category, period=""):
 
   elif category == "x-battle":
     x_battle_schedule = json_response["data"]["xSchedules"]["nodes"][instance]
-    message = f"**X BATTLE**   {'_'+get_schedule_time(category='ends', end_time=x_battle_schedule['endTime'])+'_' if period == 'now' else ''}\n"
+    message = f"**X BATTLE**   {'_'+get_schedule_time(category='ends', end_time=x_battle_schedule['endTime'])+'_' if period == 'now' else when}\n"
     message += f"{get_schedule_time(category='range', start_time=x_battle_schedule['startTime'], end_time=x_battle_schedule['endTime'])}\n\n"
 
     message += f"** {x_battle_schedule['xMatchSetting']['vsRule']['name']}: **\n"
@@ -156,7 +156,7 @@ def get_schedule(category, period=""):
 
   elif category == "league-battle":
     league_battle_schedule = json_response["data"]["leagueSchedules"]["nodes"][instance]
-    message = f"**LEAGUE BATTLE**   {'_'+get_schedule_time(category='ends', end_time=league_battle_schedule['endTime'])+'_' if period == 'now' else ''}\n"
+    message = f"**LEAGUE BATTLE**   {'_'+get_schedule_time(category='ends', end_time=league_battle_schedule['endTime'])+'_' if period == 'now' else when}\n"
     message += f"{get_schedule_time(category='range', start_time=league_battle_schedule['startTime'], end_time=league_battle_schedule['endTime'])}\n\n"
     message += f"** {league_battle_schedule['leagueMatchSetting']['vsRule']['name']}: **\n"
 
@@ -165,7 +165,7 @@ def get_schedule(category, period=""):
 
   elif category == "regular-battle":
     regular_battle_schedule = json_response["data"]["regularSchedules"]["nodes"][instance]
-    message = f"**REGULAR BATTLE**   {'_'+get_schedule_time(category='ends', end_time=regular_battle_schedule['endTime'])+'_' if period == 'now' else ''}\n"
+    message = f"**REGULAR BATTLE**   {'_'+get_schedule_time(category='ends', end_time=regular_battle_schedule['endTime'])+'_' if period == 'now' else when}\n"
     message += f"{get_schedule_time(category='range', start_time=regular_battle_schedule['startTime'], end_time=regular_battle_schedule['endTime'])}\n\n"
     message += f"** {i['regularMatchSetting']['vsRule']['name']}: **\n"
 
