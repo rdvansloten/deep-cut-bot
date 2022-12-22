@@ -124,7 +124,7 @@ def get_schedule(category, period=""):
     
   if category == "salmon-run":
     salmon_run_schedule = json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"][instance]
-    message = f"**SALMON RUN {when}**   _{get_schedule_time(category='ends', end_time=i['endTime']) if period == 'next' else ''}_\n"
+    message = f"**SALMON RUN {when}**   {'_'+get_schedule_time(category='ends', end_time=salmon_run_schedule['endTime'])+'_' if period == 'now' else ''}\n"
     message += f"{get_schedule_time(category='range', start_time=salmon_run_schedule['startTime'], end_time=salmon_run_schedule['endTime'])}\n\n"
     message += f"** {salmon_run_schedule['setting']['coopStage']['name']}: **\n"
     for i in salmon_run_schedule["setting"]["weapons"]:
