@@ -195,11 +195,11 @@ tree.add_command(music(name="music", description = "Get Deep Cut songs."))
 
 # Regular Battle
 class regular_battle(app_commands.Group):
-  @app_commands.command(name="next", description="Get the current Regular Battle rotation.")
+  @app_commands.command(name="next", description="Get the next Regular Battle rotation.")
   async def next(self, interaction: discord.Interaction) -> None:
     await interaction.response.send_message(get_schedule("regular-battle", period = "next"), suppress_embeds=True)
 
-  @app_commands.command(name="now", description="Get the next Regular Battle rotation.")
+  @app_commands.command(name="now", description="Get the current Regular Battle rotation.")
   async def now(self, interaction: discord.Interaction) -> None:
     await interaction.response.send_message(get_schedule("regular-battle", period = "now"), suppress_embeds=True)
 
