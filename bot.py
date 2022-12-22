@@ -202,11 +202,11 @@ tree.add_command(music(name="music", description = "Get Deep Cut songs."))
 class regular_battle(app_commands.Group):
   @app_commands.command(name="next", description="Get the current Regular Battle rotation.")
   async def next(self, interaction: discord.Interaction) -> None:
-    await interaction.response.send_message(get_schedule("regular-battle", which = "next"), suppress_embeds=True)
+    await interaction.response.send_message(get_schedule("regular-battle", period = "next"), suppress_embeds=True)
 
   @app_commands.command(name="now", description="Get the next Regular Battle rotation.")
   async def now(self, interaction: discord.Interaction) -> None:
-    await interaction.response.send_message(get_schedule("regular-battle", which = "now"), suppress_embeds=True)
+    await interaction.response.send_message(get_schedule("regular-battle", period = "now"), suppress_embeds=True)
 
 tree.add_command(regular_battle(name="regular-battle", description = "Get X Battle schedules."))
 
@@ -214,11 +214,11 @@ tree.add_command(regular_battle(name="regular-battle", description = "Get X Batt
 class x_battle(app_commands.Group):
   @app_commands.command(name="next", description="Get the current X Battle rotation.")
   async def next(self, interaction: discord.Interaction) -> None:
-    await interaction.response.send_message(get_schedule("x-battle", which = "next"), suppress_embeds=True)
+    await interaction.response.send_message(get_schedule("x-battle", period = "next"), suppress_embeds=True)
 
   @app_commands.command(name="now", description="Get the next X Battle rotation.")
   async def now(self, interaction: discord.Interaction) -> None:
-    await interaction.response.send_message(get_schedule("x-battle", which = "now"), suppress_embeds=True)
+    await interaction.response.send_message(get_schedule("x-battle", period = "now"), suppress_embeds=True)
 
 tree.add_command(x_battle(name="x-battle", description = "Get X Battle schedules."))
 
@@ -226,11 +226,11 @@ tree.add_command(x_battle(name="x-battle", description = "Get X Battle schedules
 class anarchy_battle(app_commands.Group):
   @app_commands.command(name="next", description="Get the current Anarchy Battle rotation.")
   async def next(self, interaction: discord.Interaction) -> None:
-    await interaction.response.send_message(get_schedule("anarchy-battle", which = "next"), suppress_embeds=True)
+    await interaction.response.send_message(get_schedule("anarchy-battle", period = "next"), suppress_embeds=True)
 
   @app_commands.command(name="now", description="Get the next Anarchy Battle rotation.")
   async def now(self, interaction: discord.Interaction) -> None:
-    await interaction.response.send_message(get_schedule("anarchy-battle", which = "now"), suppress_embeds=True)
+    await interaction.response.send_message(get_schedule("anarchy-battle", period = "now"), suppress_embeds=True)
 
 tree.add_command(anarchy_battle(name="anarchy-battle", description = "Get Anarchy Battle schedules."))
 
@@ -238,11 +238,11 @@ tree.add_command(anarchy_battle(name="anarchy-battle", description = "Get Anarch
 class league_battle(app_commands.Group):
   @app_commands.command(name="next", description="Get the current League Battle rotation.")
   async def next(self, interaction: discord.Interaction) -> None:
-    await interaction.response.send_message(get_schedule("League-battle", which = "next"), suppress_embeds=True)
+    await interaction.response.send_message(get_schedule("League-battle", period = "next"), suppress_embeds=True)
 
   @app_commands.command(name="now", description="Get the next League Battle rotation.")
   async def now(self, interaction: discord.Interaction) -> None:
-    await interaction.response.send_message(get_schedule("league-battle", which = "now"), suppress_embeds=True)
+    await interaction.response.send_message(get_schedule("league-battle", period = "now"), suppress_embeds=True)
 
 tree.add_command(x_battle(name="league-battle", description = "Get League Battle schedules."))
 
@@ -250,11 +250,11 @@ tree.add_command(x_battle(name="league-battle", description = "Get League Battle
 class salmon_run(app_commands.Group):
   @app_commands.command(name="next", description="Get the next Salmon Run rotation.")
   async def next(self, interaction: discord.Interaction) -> None:
-    await interaction.response.send_message(get_schedule("salmon-run", which = "next"), suppress_embeds=True)
+    await interaction.response.send_message(get_schedule("salmon-run", period = "next"), suppress_embeds=True)
 
   @app_commands.command(name="now", description="Get the current Salmon Run rotation.")
   async def now(self, interaction: discord.Interaction) -> None:
-    await interaction.response.send_message(get_schedule("salmon-run", which = "now"), suppress_embeds=True)
+    await interaction.response.send_message(get_schedule("salmon-run", period = "now"), suppress_embeds=True)
 
 tree.add_command(salmon_run(name="salmon-run", description = "Get Salmon Run schedules."))
 
