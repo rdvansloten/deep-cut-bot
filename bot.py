@@ -230,10 +230,10 @@ tree = app_commands.CommandTree(client)
 # Lobby schedules
 class lobby(app_commands.Group):
   # Groups
-  regular_battle = app_commands.Group(name="Regular Battle", description="List of Regular Battles.")
-  x_battle = app_commands.Group(name="X Battle", description="List of X Battles.")
-  league_battle = app_commands.Group(name="League Battle", description="List of League Battles.")
-  anarchy_battle = app_commands.Group(name="Anarchy Battle", description="List of Anarchy Battles.")
+  regular_battle = app_commands.Group(name="regular-battle", description="List of Regular Battles.")
+  x_battle = app_commands.Group(name="x-battle", description="List of X Battles.")
+  league_battle = app_commands.Group(name="league-battle", description="List of League Battles.")
+  anarchy_battle = app_commands.Group(name="anarchy-battle", description="List of Anarchy Battles.")
 
   # Regular Battle
   @regular_battle.command()
