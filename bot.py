@@ -120,7 +120,7 @@ def get_schedule(category, period=""):
   now = datetime.now(ZoneInfo("Europe/London")).strftime("%Y-%m-%dT%H:%M:%SZ")
   
   instance = 1 if period == "next" else 0
-  when = "**_NEXT_**" if period == "next" else ""
+  when = "_NEXT_" if period == "next" else ""
     
   if category == "salmon-run":
     salmon_run_schedule = json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"][instance]
