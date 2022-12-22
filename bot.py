@@ -124,15 +124,15 @@ def get_schedule(category, which=""):
   if category == "salmon-run":
     salmon_run_schedule = json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"]
 
-    if which == "upcoming":
+    if which == "next":
       salmon_run_schedule = salmon_run_schedule[1]
-      message = f"**SALMON RUN (UPCOMING)**\n"
+      message = f"**SALMON RUN (NEXT)**\n"
       message += f"{get_schedule_time(category='range', start_time=salmon_run_schedule['startTime'], end_time=salmon_run_schedule['endTime'])}\n\n"
       message += f"** {salmon_run_schedule['setting']['coopStage']['name']}: **\n"
       for i in salmon_run_schedule["setting"]["weapons"]:
         message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
 
-    elif which == "":
+    elif which == "now":
       salmon_run_schedule = salmon_run_schedule[0]
       message = f"**SALMON RUN**   _{get_schedule_time(category='ends', end_time=salmon_run_schedule['endTime'])}_\n"
       message += f"{get_schedule_time(category='range', start_time=salmon_run_schedule['startTime'], end_time=salmon_run_schedule['endTime'])}\n\n"
@@ -217,9 +217,22 @@ async def songs(interaction):
 async def regular_battle(interaction):
     await interaction.response.send_message(get_schedule("regular-battle"), suppress_embeds=True)
 
-@tree.command(name = "salmon-run", description = "Get the current Salmon Run rotation.")
-async def salmon_run(interaction):
-    await interaction.response.send_message(get_schedule("salmon-run"), suppress_embeds=True)
+# @tree.command(name = "salmon-run", description = "Get the current Salmon Run rotation.")
+# async def salmon_run(interaction):
+#     await interaction.response.send_message(get_schedule("salmon-run"), suppress_embeds=True)
+
+class salmonrun(app_commands.Group):
+
+  # subcommand of Group
+  @app_commands.command(name="upcoming", description="Get the next Salmon Run rotation.", )
+  async def upcoming(self, interaction: discord.Interaction) -> None:
+    await interaction.response.send_message(get_schedule("salmon-run", which = "next"), suppress_embeds=True)
+
+  @app_commands.command(name="now", description="Get the current Salmon Run rotation.")
+  async def now(self, interaction: discord.Interaction) -> None:
+    await interaction.response.send_message(get_schedule("salmon-run", which = "now"), suppress_embeds=True)
+
+tree.add_command(salmonrun(name="salmon-run", description = "Get Salmon Run schedules"))
 
 @tree.command(name = "anarchy-battle", description = "Get the current Anarchy Battle rotation.")
 async def anarchy_battle(interaction):
