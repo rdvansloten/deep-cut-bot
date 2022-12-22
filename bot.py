@@ -167,9 +167,9 @@ def get_schedule(category, period=""):
     regular_battle_schedule = json_response["data"]["regularSchedules"]["nodes"][instance]
     message = f"**REGULAR BATTLE**   {'_'+get_schedule_time(category='ends', end_time=regular_battle_schedule['endTime'])+'_' if period == 'now' else when}\n"
     message += f"{get_schedule_time(category='range', start_time=regular_battle_schedule['startTime'], end_time=regular_battle_schedule['endTime'])}\n\n"
-    message += f"** {i['regularMatchSetting']['vsRule']['name']}: **\n"
+    message += f"** {regular_battle_schedule['regularMatchSetting']['vsRule']['name']}: **\n"
 
-    for i in i['regularMatchSetting']['vsStages']:
+    for i in regular_battle_schedule['regularMatchSetting']['vsStages']:
       message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
 
   else:
