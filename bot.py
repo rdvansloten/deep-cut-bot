@@ -208,7 +208,7 @@ class regular_battle(app_commands.Group):
   async def now(self, interaction: discord.Interaction) -> None:
     await interaction.response.send_message(get_schedule("regular-battle", which = "now"), suppress_embeds=True)
 
-tree.add_command(regular_battle(name="x-battle", description = "Get X Battle schedules."))
+tree.add_command(regular_battle(name="regular-battle", description = "Get X Battle schedules."))
 
 # X Battle
 class x_battle(app_commands.Group):
