@@ -1,7 +1,6 @@
 # bot.py
 import requests
 import os
-import json
 from zoneinfo import ZoneInfo
 from datetime import datetime, timezone, timedelta
 from dateutil import parser
@@ -245,23 +244,6 @@ async def on_sale(interaction):
 @tree.command(name = "splatfest", description = "Get the current Splatfest results.")
 async def splatfest(interaction):
     await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
-
-@tree.command(name = "test-command", description = "Testing subcommands")
-async def main_command(interaction):
-    # This is the main command
-    # You can do something here, or you can have subcommands
-    pass
-
-@main_command.command(help='This is subcommand 1')
-async def subcommand_1(interaction):
-    await interaction.response.send_message("subcommand 1", suppress_embeds=True)
-    pass
-
-@main_command.command(help='This is subcommand 2')
-async def subcommand_2(interaction):
-    await interaction.response.send_message("subcommand 2", suppress_embeds=True)
-    pass
-
 
 @client.event
 async def on_ready():
