@@ -105,7 +105,6 @@ def get_splatfest():
       for i in i["teams"]:
         message += f"\n"
         message += f"** TEAM {i['teamName'].upper()} **\n"
-
         message += f"- Sneak Peek: {'{:.0%}'.format(i['result']['horagaiRatio'])}\n"
         message += f"- Popularity: {'{:.0%}'.format(i['result']['voteRatio'])}\n"
         message += f"- Regular Mode Clout: {'{:.0%}'.format(i['result']['regularContributionRatio'])}\n"
@@ -116,91 +115,67 @@ def get_splatfest():
    
   return message
 
-def get_schedule(category, which=""):
+def get_schedule(category, period=""):
   json_response = requests.get(f"https://splatoon3.ink/data/schedules.json").json()
   now = datetime.now(ZoneInfo("Europe/London")).strftime("%Y-%m-%dT%H:%M:%SZ")
-  # utc_time = timezone(timedelta(hours=0), name="UTC")
   
+  instance = 1 if period == "next" else 0
+  when = "(NEXT)" if period == "next" else ""
+    
   if category == "salmon-run":
-    salmon_run_schedule = json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"]
-
-    if which == "next":
-      salmon_run_schedule = salmon_run_schedule[1]
-      message = f"**SALMON RUN (NEXT)**\n"
-      message += f"{get_schedule_time(category='range', start_time=salmon_run_schedule['startTime'], end_time=salmon_run_schedule['endTime'])}\n\n"
-      message += f"** {salmon_run_schedule['setting']['coopStage']['name']}: **\n"
-      for i in salmon_run_schedule["setting"]["weapons"]:
-        if i['name'] == "Random":
-          message += f"- [{i['name']}](https://splatoonwiki.org/wiki/Salmon_Run#Wildcard_rotation) \n"
-        else:
-          message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
-
-    elif which == "now":
-      salmon_run_schedule = salmon_run_schedule[0]
-      message = f"**SALMON RUN**   _{get_schedule_time(category='ends', end_time=salmon_run_schedule['endTime'])}_\n"
-      message += f"{get_schedule_time(category='range', start_time=salmon_run_schedule['startTime'], end_time=salmon_run_schedule['endTime'])}\n\n"
-      message += f"** {salmon_run_schedule['setting']['coopStage']['name']}: **\n"
-      for i in salmon_run_schedule["setting"]["weapons"]:
-        if i['name'] == "Random":
-          message += f"- [{i['name']}](https://splatoonwiki.org/wiki/Salmon_Run#Wildcard_rotation) \n"
-        else:
-          message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
-
-    # for i in json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"]:
-    #   if now <= i["endTime"] and now >= i["startTime"]:
-    #     message = f"**SALMON RUN**   _{get_schedule_time(category='ends', end_time=i['endTime'])}_\n"
-    #     message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
-    #     message += f"** {i['setting']['coopStage']['name']}: **\n"
-    #     for i in i["setting"]["weapons"]:
-    #       message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
+    salmon_run_schedule = json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"][instance]
+    message = f"**SALMON RUN {when}**   _{get_schedule_time(category='ends', end_time=i['endTime']) if period == 'next' else ''}_\n"
+    message += f"{get_schedule_time(category='range', start_time=salmon_run_schedule['startTime'], end_time=salmon_run_schedule['endTime'])}\n\n"
+    message += f"** {salmon_run_schedule['setting']['coopStage']['name']}: **\n"
+    for i in salmon_run_schedule["setting"]["weapons"]:
+      if i['name'] == "Random":
+        message += f"- [{i['name']}](https://splatoonwiki.org/wiki/Salmon_Run#Wildcard_rotation) \n"
+      else:
+        message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
 
   elif category == "anarchy-battle":
-    for i in json_response["data"]["bankaraSchedules"]["nodes"]:
-       if now <= i["endTime"] and now >= i["startTime"]:
-        message = f"**ANARCHY BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime'])}_\n"
-        message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n"
+    for i in json_response["data"]["bankaraSchedules"]["nodes"][instance]:
+      message = f"**ANARCHY BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime'])}_\n"
+      message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n"
 
-        for i in i['bankaraMatchSettings']:
-          if i['mode'] == "CHALLENGE":
-            mode = "Series"
-          elif i['mode'] == "OPEN":
-            mode = "Open"
-          else:
-            mode = "Special"
+      for i in i['bankaraMatchSettings']:
+        if i['mode'] == "CHALLENGE":
+          mode = "Series"
+        elif i['mode'] == "OPEN":
+          mode = "Open"
+        else:
+          mode = "Special"
 
-          message += "\n"
-          message += f"** {i['vsRule']['name']} ({mode}): **\n"
+        message += "\n"
+        message += f"** {i['vsRule']['name']} ({mode}): **\n"
 
-          for i in i['vsStages']:
-            message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
+        for i in i['vsStages']:
+          message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
 
   elif category == "x-battle":
-    for i in json_response["data"]["xSchedules"]["nodes"]:
-       if now <= i["endTime"] and now >= i["startTime"]:
-        message = f"**X BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime'])}_\n"
-        message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
+    for i in json_response["data"]["xSchedules"]["nodes"][instance]:
+      message = f"**X BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime']) if period == 'next' else ''}_\n"
+      message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
 
-        message += f"** {i['xMatchSetting']['vsRule']['name']}: **\n"
-        for i in i['xMatchSetting']['vsStages']:
-          message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
+      message += f"** {i['xMatchSetting']['vsRule']['name']}: **\n"
+      for i in i['xMatchSetting']['vsStages']:
+        message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
   
   elif category == "league-battle":
-    for i in json_response["data"]["leagueSchedules"]["nodes"]:
-       if now <= i["endTime"] and now >= i["startTime"]:
-        message = f"**LEAGUE BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime'])}_\n"
-        message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
-        message += f"** {i['leagueMatchSetting']['vsRule']['name']}: **\n"
-        for i in i['leagueMatchSetting']['vsStages']:
-          message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
+    for i in json_response["data"]["leagueSchedules"]["nodes"][instance]:
+      message = f"**LEAGUE BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime']) if period == 'next' else ''}_\n"
+      message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
+      message += f"** {i['leagueMatchSetting']['vsRule']['name']}: **\n"
+      for i in i['leagueMatchSetting']['vsStages']:
+        message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
   
   elif category == "regular-battle":
-    for i in json_response["data"]["regularSchedules"]["nodes"]:
-       if now <= i["endTime"] and now >= i["startTime"]:
-        message = f"**REGULAR BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime'])}_\n"
-        message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
-        message += f"** {i['regularMatchSetting']['vsRule']['name']}: **\n"
-        for i in i['regularMatchSetting']['vsStages']:
-          message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
+    for i in json_response["data"]["regularSchedules"]["nodes"][instance]:
+      message = f"**REGULAR BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime']) if period == 'next' else ''}_\n"
+      message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
+      message += f"** {i['regularMatchSetting']['vsRule']['name']}: **\n"
+      for i in i['regularMatchSetting']['vsStages']:
+        message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
 
   else:
     message = "No valid game mode selected"
@@ -211,84 +186,113 @@ intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
-# @tree.command(name = "random-song", description = "Listen to a random Deep Cut song.")
-# async def songs(interaction):
-#     await interaction.response.send_message(get_song("random"), suppress_embeds=False)
+# Songs
+class music(app_commands.Group):
+  @app_commands.command(name="random", description="Get a random Deep Cut song.")
+  async def next(self, interaction: discord.Interaction) -> None:
+    await interaction.response.send_message(get_song(category="random"), suppress_embeds=False)
 
-# @tree.command(name = "all-songs", description = "Get all Deep Cut songs.")
-# async def songs(interaction):
-#     await interaction.response.send_message(get_song("all"), suppress_embeds=True)
-
-# @tree.command(name = "regular-battle", description = "Get the current Regular Battle rotation.")
-# async def regular_battle(interaction):
-#     await interaction.response.send_message(get_schedule("regular-battle"), suppress_embeds=True)
-
-# @tree.command(name = "salmon-run", description = "Get the current Salmon Run rotation.")
-# async def salmon_run(interaction):
-#     await interaction.response.send_message(get_schedule("salmon-run"), suppress_embeds=True)
-
-# Lobby schedules
-class lobby(app_commands.Group):
-  # Groups
-  regular_battle = app_commands.Group(name="regular-battle", description="List of Regular Battles.")
-  x_battle = app_commands.Group(name="x-battle", description="List of X Battles.")
-  league_battle = app_commands.Group(name="league-battle", description="List of League Battles.")
-  anarchy_battle = app_commands.Group(name="anarchy-battle", description="List of Anarchy Battles.")
-
-  # Regular Battle
-  @regular_battle.command()
+  @app_commands.command(name="all", description="Get a list of all Deep Cut songs.")
   async def now(self, interaction: discord.Interaction) -> None:
-    await interaction.response.send_message(get_schedule("regular-battle", which = "now"), suppress_embeds=True)
+    await interaction.response.send_message(get_song(category="all"), suppress_embeds=True)
+
+tree.add_command(music(name="music", description = "Get Deep Cut songs."))
+
+# Regular Battle
+class regular_battle(app_commands.Group):
+  @app_commands.command(name="next", description="Get the current Regular Battle rotation.")
   async def next(self, interaction: discord.Interaction) -> None:
     await interaction.response.send_message(get_schedule("regular-battle", which = "next"), suppress_embeds=True)
 
-  @x_battle.command()
+  @app_commands.command(name="now", description="Get the next Regular Battle rotation.")
+  async def now(self, interaction: discord.Interaction) -> None:
+    await interaction.response.send_message(get_schedule("regular-battle", which = "now"), suppress_embeds=True)
+
+tree.add_command(regular_battle(name="x-battle", description = "Get X Battle schedules."))
+
+# X Battle
+class x_battle(app_commands.Group):
+  @app_commands.command(name="next", description="Get the current X Battle rotation.")
   async def next(self, interaction: discord.Interaction) -> None:
     await interaction.response.send_message(get_schedule("x-battle", which = "next"), suppress_embeds=True)
 
-tree.add_command(lobby(name="lobby", description = "Get Lobby schedules"))
+  @app_commands.command(name="now", description="Get the next X Battle rotation.")
+  async def now(self, interaction: discord.Interaction) -> None:
+    await interaction.response.send_message(get_schedule("x-battle", which = "now"), suppress_embeds=True)
+
+tree.add_command(x_battle(name="x-battle", description = "Get X Battle schedules."))
+
+# Anarchy Battle
+class anarchy_battle(app_commands.Group):
+  @app_commands.command(name="next", description="Get the current Anarchy Battle rotation.")
+  async def next(self, interaction: discord.Interaction) -> None:
+    await interaction.response.send_message(get_schedule("anarchy-battle", which = "next"), suppress_embeds=True)
+
+  @app_commands.command(name="now", description="Get the next Anarchy Battle rotation.")
+  async def now(self, interaction: discord.Interaction) -> None:
+    await interaction.response.send_message(get_schedule("anarchy-battle", which = "now"), suppress_embeds=True)
+
+tree.add_command(anarchy_battle(name="anarchy-battle", description = "Get Anarchy Battle schedules."))
+
+# League Battle
+class league_battle(app_commands.Group):
+  @app_commands.command(name="next", description="Get the current League Battle rotation.")
+  async def next(self, interaction: discord.Interaction) -> None:
+    await interaction.response.send_message(get_schedule("League-battle", which = "next"), suppress_embeds=True)
+
+  @app_commands.command(name="now", description="Get the next League Battle rotation.")
+  async def now(self, interaction: discord.Interaction) -> None:
+    await interaction.response.send_message(get_schedule("league-battle", which = "now"), suppress_embeds=True)
+
+tree.add_command(x_battle(name="league-battle", description = "Get League Battle schedules."))
 
 # Salmon Run
 class salmon_run(app_commands.Group):
-  salmon_run = app_commands.Group(name="salmon-run", description="List of Salmon Run commands.")
-
-  @salmon_run.command(name="upcoming", description="Get the next Salmon Run rotation.", )
-  async def upcoming(self, interaction: discord.Interaction) -> None:
+  @app_commands.command(name="next", description="Get the next Salmon Run rotation.")
+  async def next(self, interaction: discord.Interaction) -> None:
     await interaction.response.send_message(get_schedule("salmon-run", which = "next"), suppress_embeds=True)
 
-  @salmon_run.command(name="now", description="Get the current Salmon Run rotation.", )
-  async def upcoming(self, interaction: discord.Interaction) -> None:
+  @app_commands.command(name="now", description="Get the current Salmon Run rotation.")
+  async def now(self, interaction: discord.Interaction) -> None:
     await interaction.response.send_message(get_schedule("salmon-run", which = "now"), suppress_embeds=True)
 
-  @app_commands.command(name="big-run", description="Get the Big Run rotation.")
+tree.add_command(salmon_run(name="salmon-run", description = "Get Salmon Run schedules."))
+
+# Splatnet Shop
+class splatnet_shop(app_commands.Group):
+  @app_commands.command(name="on-sale", description="Get the current On Sale gear.")
+  async def next(self, interaction: discord.Interaction) -> None:
+    await interaction.response.send_message(get_gear(category="on-sale"), suppress_embeds=True)
+  
+  @app_commands.command(name="daily-drop", description="Get the current Daily Drop gear.")
   async def now(self, interaction: discord.Interaction) -> None:
-    await interaction.response.send_message(get_schedule("big-run"), suppress_embeds=True)
+    await interaction.response.send_message(get_gear(category="daily-drop"), suppress_embeds=True)
 
-tree.add_command(salmon_run(name="salmon-run", description = "Get Grizzco Salmon Run schedules."))
+tree.add_command(splatnet_shop(name="splatnet-shop", description = "Get Splatnet Shop gear."))
 
-# @tree.command(name = "anarchy-battle", description = "Get the current Anarchy Battle rotation.")
-# async def anarchy_battle(interaction):
-#     await interaction.response.send_message(get_schedule("anarchy-battle"), suppress_embeds=True)
+# Big Run
+# class big_run(app_commands.Group):
+#   @app_commands.command(name="next", description="Get the next Big Run rotation.")
+#   async def next(self, interaction: discord.Interaction) -> None:
+#     await interaction.response.send_message("The next Big Run is not known yet.", suppress_embeds=True)
 
-# @tree.command(name = "x-battle", description = "Get the current X Battle rotation.")
-# async def x_battle(interaction):
-#     await interaction.response.send_message(get_schedule("x-battle"), suppress_embeds=True)
+#   @app_commands.command(name="now", description="Get the current Big Run rotation.")
+#   async def now(self, interaction: discord.Interaction) -> None:
+#     await interaction.response.send_message("There is no Big Run going on.", suppress_embeds=True)
 
-# @tree.command(name = "league-battle", description = "Get the current League Battle rotation.")
-# async def league_battle(interaction):
-#     await interaction.response.send_message(get_schedule("league-battle"), suppress_embeds=True)
+# tree.add_command(big_run(name="big-run", description = "Get Big Run schedules."))
 
-# @tree.command(name = "daily-drop", description = "Get the current Daily Drop Gear.")
-# async def daily_drop(interaction):
-#     await interaction.response.send_message(get_gear("daily-drop"), suppress_embeds=True)
-
-# @tree.command(name = "on-sale", description = "Get the current On Sale Gear.")
-# async def on_sale(interaction):
-#     await interaction.response.send_message(get_gear("on-sale"), suppress_embeds=True)
-
-# @tree.command(name = "splatfest", description = "Get the current Splatfest results.")
-# async def splatfest(interaction):
+# Splatfest
+# class splatfest(app_commands.Group):
+#   @app_commands.command(name="last", description="Get the last Splatfest results.")
+#   async def next(self, interaction: discord.Interaction) -> None:
 #     await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
+  
+#   @app_commands.command(name="previous", description="Get the previous Splatfest results.")
+#   async def now(self, interaction: discord.Interaction) -> None:
+#     await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
+
+# tree.add_command(splatfest(name="splatfest", description = "Get Splatfest results."))
 
 @client.event
 async def on_ready():
