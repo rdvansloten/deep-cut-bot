@@ -246,18 +246,22 @@ async def on_sale(interaction):
 async def splatfest(interaction):
     await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
 
-# @tree.command()
-# async def mycommand(interaction):
-#   await interaction.response.send_message('Invalid subcommand. Please use "salmon-run".')
+@tree.command(name = "test-command", description = "Testing subcommands")
+async def main_command(interaction):
+    # This is the main command
+    # You can do something here, or you can have subcommands
+    pass
 
-# mycommand.add_command(subcommand, help="This is a detailed description of the subcommand")
+@main_command.command(help='This is subcommand 1')
+async def subcommand_1(interaction):
+    await interaction.response.send_message("subcommand 1", suppress_embeds=True)
+    pass
 
-# @tree.command(name='upcoming', description="Get upcoming schedule for Salmon Run.")
-# async def salmon_run_beta(interaction, mode: str):
-#   if mode:
-#     await interaction.response.send_message(get_schedule(category=mode, which="upcoming"), suppress_embeds=True)
-#   else:
-#     await interaction.response.send_message('Invalid subcommand. Please use "salmon-run".')
+@main_command.command(help='This is subcommand 2')
+async def subcommand_2(interaction):
+    await interaction.response.send_message("subcommand 2", suppress_embeds=True)
+    pass
+
 
 @client.event
 async def on_ready():
