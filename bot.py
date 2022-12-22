@@ -264,7 +264,7 @@ class salmon_run(app_commands.Group):
   async def now(self, interaction: discord.Interaction) -> None:
     await interaction.response.send_message(get_schedule("big-run"), suppress_embeds=True)
 
-tree.add_command(salmon_run(name="Salmon Run", description = "Get Grizzco Salmon Run schedules."))
+tree.add_command(salmon_run(name="salmon-run", description = "Get Grizzco Salmon Run schedules."))
 
 # @tree.command(name = "anarchy-battle", description = "Get the current Anarchy Battle rotation.")
 # async def anarchy_battle(interaction):
