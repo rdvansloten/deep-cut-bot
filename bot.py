@@ -140,7 +140,7 @@ def get_schedule(category, period=""):
 
     for i in anarchy_battle_schedule['bankaraMatchSettings']:
       message += "\n"
-      message += f"** {i['vsRule']['name']} ({'SERIES' if i['mode'] == 'CHALLENGE' else 'Open'}): **\n"
+      message += f"** {i['vsRule']['name']} ({'Series' if i['mode'] == 'CHALLENGE' else 'Open'}): **\n"
 
       for i in i['vsStages']:
         message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
