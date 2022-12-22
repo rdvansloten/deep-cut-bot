@@ -131,7 +131,7 @@ def get_schedule(category, which=""):
       message += f"** {salmon_run_schedule['setting']['coopStage']['name']}: **\n"
       for i in salmon_run_schedule["setting"]["weapons"]:
         if i['name'] == "Random":
-          message += f"- Random \n"
+          message += f"- [{i['name']}](https://splatoonwiki.org/wiki/Salmon_Run#Wildcard_rotation) \n"
         else:
           message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
 
@@ -142,7 +142,7 @@ def get_schedule(category, which=""):
       message += f"** {salmon_run_schedule['setting']['coopStage']['name']}: **\n"
       for i in salmon_run_schedule["setting"]["weapons"]:
         if i['name'] == "Random":
-          message += f"- Random \n"
+          message += f"- [{i['name']}](https://splatoonwiki.org/wiki/Salmon_Run#Wildcard_rotation) \n"
         else:
           message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
 
