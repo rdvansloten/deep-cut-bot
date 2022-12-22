@@ -255,11 +255,11 @@ tree.add_command(salmon_run(name="salmon-run", description = "Get Salmon Run sch
 
 # Splatnet Shop
 class splatnet_shop(app_commands.Group):
-  @app_commands.command(name="on-sale", description="Get the current On Sale gear.")
+  @app_commands.command(name="sale", description="Get the current On Sale gear.")
   async def next(self, interaction: discord.Interaction) -> None:
     await interaction.response.send_message(get_gear(category="on-sale"), suppress_embeds=True)
   
-  @app_commands.command(name="daily-drop", description="Get the current Daily Drop gear.")
+  @app_commands.command(name="daily", description="Get the current Daily Drop gear.")
   async def now(self, interaction: discord.Interaction) -> None:
     await interaction.response.send_message(get_gear(category="daily-drop"), suppress_embeds=True)
 
