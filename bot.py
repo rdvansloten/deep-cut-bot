@@ -230,24 +230,26 @@ tree = app_commands.CommandTree(client)
 # Lobby schedules
 class lobby(app_commands.Group):
   # Groups
-  regular_battle = app_commands.Group(name="regular-battle", description="This a nested group!")
-  x_battle = app_commands.Group(name="x-battle", description="This a nested group!")
-  league_battle = app_commands.Group(name="league-battle", description="This a nested group!")
-  anarchy_battle = app_commands.Group(name="anarchy-battle", description="This a nested group!")
+  regular_battle = app_commands.Group(name="Regular Battle", description="List of Regular Battles.")
+  x_battle = app_commands.Group(name="X Battle", description="List of X Battles.")
+  league_battle = app_commands.Group(name="League Battle", description="List of League Battles.")
+  anarchy_battle = app_commands.Group(name="Anarchy Battle", description="List of Anarchy Battles.")
 
   # Regular Battle
   @regular_battle.command()
   async def now(self, interaction: discord.Interaction) -> None:
     await interaction.response.send_message(get_schedule("regular-battle", which = "now"), suppress_embeds=True)
-
-  @regular_battle.command()
   async def next(self, interaction: discord.Interaction) -> None:
     await interaction.response.send_message(get_schedule("regular-battle", which = "next"), suppress_embeds=True)
 
+  @x_battle.command()
+  async def next(self, interaction: discord.Interaction) -> None:
+    await interaction.response.send_message(get_schedule("x-battle", which = "next"), suppress_embeds=True)
+
 tree.add_command(lobby(name="lobby", description = "Get Lobby schedules"))
 
-# Grizzco
-class grizzco(app_commands.Group):
+# Salmon Run
+class salmon_run(app_commands.Group):
   salmon_run = app_commands.Group(name="salmon-run", description="List of Salmon Run commands.")
 
   @salmon_run.command(name="upcoming", description="Get the next Salmon Run rotation.", )
@@ -262,7 +264,7 @@ class grizzco(app_commands.Group):
   async def now(self, interaction: discord.Interaction) -> None:
     await interaction.response.send_message(get_schedule("big-run"), suppress_embeds=True)
 
-tree.add_command(grizzco(name="salmon-run", description = "Get Grizzco Salmon Run/Big Run schedules."))
+tree.add_command(salmon_run(name="Salmon Run", description = "Get Grizzco Salmon Run schedules."))
 
 # @tree.command(name = "anarchy-battle", description = "Get the current Anarchy Battle rotation.")
 # async def anarchy_battle(interaction):
