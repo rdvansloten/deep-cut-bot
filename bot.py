@@ -134,48 +134,43 @@ def get_schedule(category, period=""):
         message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
 
   elif category == "anarchy-battle":
-    for i in json_response["data"]["bankaraSchedules"]["nodes"][instance]:
-      message = f"**ANARCHY BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime'])}_\n"
-      message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n"
+    anarchy_battle_schedule = json_response["data"]["bankaraSchedules"]["nodes"][instance]
+    message = f"**ANARCHY BATTLE**   {'_'+get_schedule_time(category='ends', end_time=anarchy_battle_schedule['endTime'])+'_' if period == 'next' else ''}\n"
+    message += f"{get_schedule_time(category='range', start_time=anarchy_battle_schedule['startTime'], end_time=anarchy_battle_schedule['endTime'])}\n"
 
-      for i in i['bankaraMatchSettings']:
-        if i['mode'] == "CHALLENGE":
-          mode = "Series"
-        elif i['mode'] == "OPEN":
-          mode = "Open"
-        else:
-          mode = "Special"
+    for i in anarchy_battle_schedule['bankaraMatchSettings']:
+      message += "\n"
+      message += f"** {i['vsRule']['name']} ({'SERIES' if i['mode'] == 'CHALLENGE' else 'Open'}): **\n"
 
-        message += "\n"
-        message += f"** {i['vsRule']['name']} ({mode}): **\n"
-
-        for i in i['vsStages']:
-          message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
+      for i in i['vsStages']:
+        message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
 
   elif category == "x-battle":
-    for i in json_response["data"]["xSchedules"]["nodes"][instance]:
-      message = f"**X BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime']) if period == 'next' else ''}_\n"
-      message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
+    x_battle_schedule = json_response["data"]["xSchedules"]["nodes"][instance]
+    message = f"**X BATTLE**   {'_'+get_schedule_time(category='ends', end_time=x_battle_schedule['endTime'])+'_' if period == 'next' else ''}\n"
+    message += f"{get_schedule_time(category='range', start_time=x_battle_schedule['startTime'], end_time=x_battle_schedule['endTime'])}\n\n"
 
-      message += f"** {i['xMatchSetting']['vsRule']['name']}: **\n"
-      for i in i['xMatchSetting']['vsStages']:
-        message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
-  
+    message += f"** {x_battle_schedule['xMatchSetting']['vsRule']['name']}: **\n"
+    for i in x_battle_schedule['xMatchSetting']['vsStages']:
+      message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
+
   elif category == "league-battle":
-    for i in json_response["data"]["leagueSchedules"]["nodes"][instance]:
-      message = f"**LEAGUE BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime']) if period == 'next' else ''}_\n"
-      message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
-      message += f"** {i['leagueMatchSetting']['vsRule']['name']}: **\n"
-      for i in i['leagueMatchSetting']['vsStages']:
-        message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
-  
+    league_battle_schedule = json_response["data"]["leagueSchedules"]["nodes"][instance]
+    message = f"**LEAGUE BATTLE**   {'_'+get_schedule_time(category='ends', end_time=league_battle_schedule['endTime'])+'_' if period == 'next' else ''}\n"
+    message += f"{get_schedule_time(category='range', start_time=league_battle_schedule['startTime'], end_time=league_battle_schedule['endTime'])}\n\n"
+    message += f"** {league_battle_schedule['leagueMatchSetting']['vsRule']['name']}: **\n"
+
+    for i in league_battle_schedule['leagueMatchSetting']['vsStages']:
+      message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
+
   elif category == "regular-battle":
-    for i in json_response["data"]["regularSchedules"]["nodes"][instance]:
-      message = f"**REGULAR BATTLE**   _{get_schedule_time(category='ends', end_time=i['endTime']) if period == 'next' else ''}_\n"
-      message += f"{get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
-      message += f"** {i['regularMatchSetting']['vsRule']['name']}: **\n"
-      for i in i['regularMatchSetting']['vsStages']:
-        message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
+    regular_battle_schedule = json_response["data"]["regularSchedules"]["nodes"][instance]
+    message = f"**REGULAR BATTLE**   {'_'+get_schedule_time(category='ends', end_time=regular_battle_schedule['endTime'])+'_' if period == 'next' else ''}\n"
+    message += f"{get_schedule_time(category='range', start_time=regular_battle_schedule['startTime'], end_time=regular_battle_schedule['endTime'])}\n\n"
+    message += f"** {i['regularMatchSetting']['vsRule']['name']}: **\n"
+    
+    for i in i['regularMatchSetting']['vsStages']:
+      message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
 
   else:
     message = "No valid game mode selected"
