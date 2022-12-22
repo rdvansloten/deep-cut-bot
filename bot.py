@@ -211,58 +211,82 @@ intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
-@tree.command(name = "random-song", description = "Listen to a random Deep Cut song.")
-async def songs(interaction):
-    await interaction.response.send_message(get_song("random"), suppress_embeds=False)
+# @tree.command(name = "random-song", description = "Listen to a random Deep Cut song.")
+# async def songs(interaction):
+#     await interaction.response.send_message(get_song("random"), suppress_embeds=False)
 
-@tree.command(name = "all-songs", description = "Get all Deep Cut songs.")
-async def songs(interaction):
-    await interaction.response.send_message(get_song("all"), suppress_embeds=True)
+# @tree.command(name = "all-songs", description = "Get all Deep Cut songs.")
+# async def songs(interaction):
+#     await interaction.response.send_message(get_song("all"), suppress_embeds=True)
 
-@tree.command(name = "regular-battle", description = "Get the current Regular Battle rotation.")
-async def regular_battle(interaction):
-    await interaction.response.send_message(get_schedule("regular-battle"), suppress_embeds=True)
+# @tree.command(name = "regular-battle", description = "Get the current Regular Battle rotation.")
+# async def regular_battle(interaction):
+#     await interaction.response.send_message(get_schedule("regular-battle"), suppress_embeds=True)
 
 # @tree.command(name = "salmon-run", description = "Get the current Salmon Run rotation.")
 # async def salmon_run(interaction):
 #     await interaction.response.send_message(get_schedule("salmon-run"), suppress_embeds=True)
 
-class salmonrun(app_commands.Group):
+# Lobby schedules
+class lobby(app_commands.Group):
+  # Groups
+  regular_battle = app_commands.Group(name="regular-battle", description="This a nested group!")
+  x_battle = app_commands.Group(name="x-battle", description="This a nested group!")
+  league_battle = app_commands.Group(name="league-battle", description="This a nested group!")
+  anarchy_battle = app_commands.Group(name="anarchy-battle", description="This a nested group!")
 
-  # subcommand of Group
-  @app_commands.command(name="upcoming", description="Get the next Salmon Run rotation.", )
+  # Regular Battle
+  @regular_battle.command()
+  async def now(self, interaction: discord.Interaction) -> None:
+    await interaction.response.send_message(get_schedule("regular-battle", which = "now"), suppress_embeds=True)
+
+  @regular_battle.command()
+  async def next(self, interaction: discord.Interaction) -> None:
+    await interaction.response.send_message(get_schedule("regular-battle", which = "next"), suppress_embeds=True)
+
+tree.add_command(lobby(name="lobby", description = "Get Lobby schedules"))
+
+# Grizzco
+class grizzco(app_commands.Group):
+  salmon_run = app_commands.Group(name="salmon-run", description="List of Salmon Run commands.")
+
+  @salmon_run.command(name="upcoming", description="Get the next Salmon Run rotation.", )
   async def upcoming(self, interaction: discord.Interaction) -> None:
     await interaction.response.send_message(get_schedule("salmon-run", which = "next"), suppress_embeds=True)
 
-  @app_commands.command(name="now", description="Get the current Salmon Run rotation.")
-  async def now(self, interaction: discord.Interaction) -> None:
+  @salmon_run.command(name="now", description="Get the current Salmon Run rotation.", )
+  async def upcoming(self, interaction: discord.Interaction) -> None:
     await interaction.response.send_message(get_schedule("salmon-run", which = "now"), suppress_embeds=True)
 
-tree.add_command(salmonrun(name="salmon-run", description = "Get Salmon Run schedules"))
+  @app_commands.command(name="big-run", description="Get the Big Run rotation.")
+  async def now(self, interaction: discord.Interaction) -> None:
+    await interaction.response.send_message(get_schedule("big-run"), suppress_embeds=True)
 
-@tree.command(name = "anarchy-battle", description = "Get the current Anarchy Battle rotation.")
-async def anarchy_battle(interaction):
-    await interaction.response.send_message(get_schedule("anarchy-battle"), suppress_embeds=True)
+tree.add_command(grizzco(name="salmon-run", description = "Get Grizzco Salmon Run/Big Run schedules."))
 
-@tree.command(name = "x-battle", description = "Get the current X Battle rotation.")
-async def x_battle(interaction):
-    await interaction.response.send_message(get_schedule("x-battle"), suppress_embeds=True)
+# @tree.command(name = "anarchy-battle", description = "Get the current Anarchy Battle rotation.")
+# async def anarchy_battle(interaction):
+#     await interaction.response.send_message(get_schedule("anarchy-battle"), suppress_embeds=True)
 
-@tree.command(name = "league-battle", description = "Get the current League Battle rotation.")
-async def league_battle(interaction):
-    await interaction.response.send_message(get_schedule("league-battle"), suppress_embeds=True)
+# @tree.command(name = "x-battle", description = "Get the current X Battle rotation.")
+# async def x_battle(interaction):
+#     await interaction.response.send_message(get_schedule("x-battle"), suppress_embeds=True)
 
-@tree.command(name = "daily-drop", description = "Get the current Daily Drop Gear.")
-async def daily_drop(interaction):
-    await interaction.response.send_message(get_gear("daily-drop"), suppress_embeds=True)
+# @tree.command(name = "league-battle", description = "Get the current League Battle rotation.")
+# async def league_battle(interaction):
+#     await interaction.response.send_message(get_schedule("league-battle"), suppress_embeds=True)
 
-@tree.command(name = "on-sale", description = "Get the current On Sale Gear.")
-async def on_sale(interaction):
-    await interaction.response.send_message(get_gear("on-sale"), suppress_embeds=True)
+# @tree.command(name = "daily-drop", description = "Get the current Daily Drop Gear.")
+# async def daily_drop(interaction):
+#     await interaction.response.send_message(get_gear("daily-drop"), suppress_embeds=True)
 
-@tree.command(name = "splatfest", description = "Get the current Splatfest results.")
-async def splatfest(interaction):
-    await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
+# @tree.command(name = "on-sale", description = "Get the current On Sale Gear.")
+# async def on_sale(interaction):
+#     await interaction.response.send_message(get_gear("on-sale"), suppress_embeds=True)
+
+# @tree.command(name = "splatfest", description = "Get the current Splatfest results.")
+# async def splatfest(interaction):
+#     await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
 
 @client.event
 async def on_ready():
