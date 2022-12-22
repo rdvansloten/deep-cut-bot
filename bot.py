@@ -130,7 +130,10 @@ def get_schedule(category, which=""):
       message += f"{get_schedule_time(category='range', start_time=salmon_run_schedule['startTime'], end_time=salmon_run_schedule['endTime'])}\n\n"
       message += f"** {salmon_run_schedule['setting']['coopStage']['name']}: **\n"
       for i in salmon_run_schedule["setting"]["weapons"]:
-        message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
+        if i['name'] == "Random":
+          message += f"- Random \n"
+        else:
+          message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
 
     elif which == "now":
       salmon_run_schedule = salmon_run_schedule[0]
@@ -138,7 +141,10 @@ def get_schedule(category, which=""):
       message += f"{get_schedule_time(category='range', start_time=salmon_run_schedule['startTime'], end_time=salmon_run_schedule['endTime'])}\n\n"
       message += f"** {salmon_run_schedule['setting']['coopStage']['name']}: **\n"
       for i in salmon_run_schedule["setting"]["weapons"]:
-        message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
+        if i['name'] == "Random":
+          message += f"- Random \n"
+        else:
+          message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
 
     # for i in json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"]:
     #   if now <= i["endTime"] and now >= i["startTime"]:
