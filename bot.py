@@ -128,10 +128,12 @@ def get_splatfest(period):
 
       if score > current_lead_score:
         current_lead_score = score
-        current_lead_team = i['teamName'].upper()
+        current_lead_team = i['teamName']
     
-    if current_lead_team and current_lead_score > 0:
-      message += f"Current leader: Team {current_lead_team}"
+    if current_lead_team and current_lead_score > 0 and splatfest_result['state'] == "CLOSED":
+      message += f"Winner: **Team {current_lead_team}**"
+    elif current_lead_team and current_lead_score > 0 and splatfest_result['state'] == "OPEN":
+      message += f"Currently in the lead: **Team {current_lead_team}**"
     else:
       message += f"Results are pending. No team is in the lead yet."
         
