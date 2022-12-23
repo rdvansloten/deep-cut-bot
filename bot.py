@@ -94,25 +94,24 @@ def get_gear(category):
   
   return message
 
-def get_splatfest():
+def get_splatfest(period):
   json_response = requests.get(f"https://splatoon3.ink/data/festivals.json").json()
-  now = datetime.now(ZoneInfo("Europe/London")).strftime("%Y-%m-%dT%H:%M:%SZ")
+  instance = 1 if period == "previous" else 0
+
+  splatfest_result = json_response["US"]["data"]["festRecords"]["nodes"][instance]     
+  message = f"**{i['title'].upper()}** ({get_schedule_time(category='range', start_time=splatfest_result['startTime'], end_time=splatfest_result['endTime'])}\n\n"
+
+  for i in splatfest_result["teams"]:
+    message += f"\n"
+    message += f"** TEAM {i['teamName'].upper()} **\n"
+    message += f"- Sneak Peek: {'{:.0%}'.format(i['result']['horagaiRatio'])}\n"
+    message += f"- Popularity: {'{:.0%}'.format(i['result']['voteRatio'])}\n"
+    message += f"- Regular Mode Clout: {'{:.0%}'.format(i['result']['regularContributionRatio'])}\n"
+    message += f"- Pro Mode Clout {'{:.0%}'.format(i['result']['challengeContributionRatio'])}\n"
+
+  else:
+    message = f"There is currently no Splatfest going on. Please check back later."
   
-  for i in json_response["US"]["data"]["festRecords"]["nodes"]:
-    if now <= i["endTime"] and now >= i["startTime"]:      
-      message = f"**{i['title'].upper()}** ({get_schedule_time(category='range', start_time=i['startTime'], end_time=i['endTime'])}\n\n"
-
-      for i in i["teams"]:
-        message += f"\n"
-        message += f"** TEAM {i['teamName'].upper()} **\n"
-        message += f"- Sneak Peek: {'{:.0%}'.format(i['result']['horagaiRatio'])}\n"
-        message += f"- Popularity: {'{:.0%}'.format(i['result']['voteRatio'])}\n"
-        message += f"- Regular Mode Clout: {'{:.0%}'.format(i['result']['regularContributionRatio'])}\n"
-        message += f"- Pro Mode Clout {'{:.0%}'.format(i['result']['challengeContributionRatio'])}\n"
-
-    else:
-      message = f"There is currently no Splatfest going on. Please check back later."
-   
   return message
 
 def get_schedule(category, period=""):
@@ -264,6 +263,18 @@ class splatnet_shop(app_commands.Group):
     await interaction.response.send_message(get_gear(category="daily-drop"), suppress_embeds=True)
 
 tree.add_command(splatnet_shop(name="splatnet-shop", description = "Get Splatnet Shop gear."))
+
+# Splatfest
+class splatfest(app_commands.Group):
+  @app_commands.command(name="now", description="Get the current Splatfest results.")
+  async def next(self, interaction: discord.Interaction) -> None:
+    await interaction.response.send_message(get_splatfest(period = "now"), suppress_embeds=True)
+  
+  @app_commands.command(name="previous", description="Get the previous Splatfest results.")
+  async def now(self, interaction: discord.Interaction) -> None:
+    await interaction.response.send_message(get_gear(period = "previous"), suppress_embeds=True)
+
+tree.add_command(splatfest(name="splatfest", description = "Get Splatfest data."))
 
 # Big Run
 # class big_run(app_commands.Group):
