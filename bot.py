@@ -116,26 +116,37 @@ def get_splatfest(period):
     current_lead_team = ""
     score = ""
 
-    for i in splatfest_result["teams"]:
+    for k, v in enumerate(splatfest_result["teams"]):
       message += f"** TEAM {i['teamName'].upper()} **\n"
       message += "```"
-      message += f"Sneak Peek   : {'{:.0%}'.format(i['result']['horagaiRatio'])}\n"
-      message += f"Popularity   : {'{:.0%}'.format(i['result']['voteRatio'])}\n"
-      message += f"Normal Clout : {'{:.0%}'.format(i['result']['regularContributionRatio'])}\n"
-      message += f"Pro Clout    : {'{:.0%}'.format(i['result']['challengeContributionRatio'])}\n"
+      message += f"Sneak Peek   : {'{:.0%}'.format(v['result']['horagaiRatio'])}\n"
+      message += f"Popularity   : {'{:.0%}'.format(v['result']['voteRatio'])}\n"
+      message += f"Normal Clout : {'{:.0%}'.format(v['result']['regularContributionRatio'])}\n"
+      message += f"Pro Clout    : {'{:.0%}'.format(v['result']['challengeContributionRatio'])}\n"
       message += "```"
       message += f"\n"
       
-      score = i['result']['horagaiRatio'] + i['result']['voteRatio'] + i['result']['regularContributionRatio'] + i['result']['challengeContributionRatio']
+      score = v['result']['horagaiRatio'] + v['result']['voteRatio'] + v['result']['regularContributionRatio'] + v['result']['challengeContributionRatio']
 
       if score > current_lead_score:
         current_lead_score = score
-        current_lead_team = i['teamName'].upper()
+        current_lead_team = v['teamName'].upper()
+        index = k
     
+    if index == 0:
+      current_lead_idol = "Shiver"
+    elif index == 1:
+      current_lead_idol = "Frye"
+    elif index == 2:
+      current_lead_idol = "Big Man"
+    else:
+      current_lead_idol = "N/A"
+
+
     if current_lead_team and current_lead_score > 0 and splatfest_result['state'] == "CLOSED":
-      message += f"Winner: **TEAM {current_lead_team}**"
+      message += f"Winner: **TEAM {current_lead_team}** ({current_lead_idol})"
     elif current_lead_team and current_lead_score > 0 and splatfest_result['state'] == "OPEN":
-      message += f"Currently in the lead: **TEAM {current_lead_team}**"
+      message += f"Currently in the lead: **TEAM {current_lead_team}** ({current_lead_idol})"
     else:
       message += f"Results are pending. No team is in the lead yet."
         
