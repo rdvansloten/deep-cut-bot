@@ -118,10 +118,12 @@ def get_splatfest(period):
 
     for i in splatfest_result["teams"]:
       message += f"** TEAM {i['teamName'].upper()} **\n"
-      message += f"- Sneak Peek: {'{:.0%}'.format(i['result']['horagaiRatio'])}\n"
-      message += f"- Popularity: {'{:.0%}'.format(i['result']['voteRatio'])}\n"
-      message += f"- Regular Mode Clout: {'{:.0%}'.format(i['result']['regularContributionRatio'])}\n"
-      message += f"- Pro Mode Clout {'{:.0%}'.format(i['result']['challengeContributionRatio'])}\n"
+      message += "```"
+      message += f"- Sneak Peek         : {'{:.0%}'.format(i['result']['horagaiRatio'])}\n"
+      message += f"- Popularity         : {'{:.0%}'.format(i['result']['voteRatio'])}\n"
+      message += f"- Regular Mode Clout : {'{:.0%}'.format(i['result']['regularContributionRatio'])}\n"
+      message += f"- Pro Mode Clout     : {'{:.0%}'.format(i['result']['challengeContributionRatio'])}\n"
+      message += "```"
       message += f"\n"
       
       score = i['result']['horagaiRatio'] + i['result']['voteRatio'] + i['result']['regularContributionRatio'] + i['result']['challengeContributionRatio']
