@@ -104,7 +104,7 @@ def get_splatfest(period):
     instance = 0
     
   splatfest_result = json_response["US"]["data"]["festRecords"]["nodes"][instance]
-  
+
   if period == "now" and splatfest_result['state'] == "CLOSED":
     message = f"There is currently no Splatfest going on. Please check back later."
 
@@ -112,14 +112,30 @@ def get_splatfest(period):
     message = f"**SPLATFEST: {splatfest_result['title'].upper()}** {'_'+get_schedule_time(category='ends', end_time=splatfest_result['endTime'])+'_' if period == 'now' else ''}\n"
     message += f"{get_schedule_time(category='range', start_time=splatfest_result['startTime'], end_time=splatfest_result['endTime'])}\n\n"
 
+    current_lead_score = 0
+    current_lead_team = ""
+    score = ""
+
     for i in splatfest_result["teams"]:
-      message += f"\n"
       message += f"** TEAM {i['teamName'].upper()} **\n"
       message += f"- Sneak Peek: {'{:.0%}'.format(i['result']['horagaiRatio'])}\n"
       message += f"- Popularity: {'{:.0%}'.format(i['result']['voteRatio'])}\n"
       message += f"- Regular Mode Clout: {'{:.0%}'.format(i['result']['regularContributionRatio'])}\n"
       message += f"- Pro Mode Clout {'{:.0%}'.format(i['result']['challengeContributionRatio'])}\n"
-  
+      message += f"\n"
+      
+      score = i['result']['horagaiRatio'] + i['result']['voteRatio'] + i['result']['regularContributionRatio'] + i['result']['challengeContributionRatio']
+
+      if score > current_lead_score:
+        current_lead_score = score
+        current_lead_team = i['teamName'].upper()
+    
+    if current_lead_team and current_lead_score > 0:
+      message += f"Current leader: Team {current_lead_team}"
+    else:
+      message += f"Results are pending. No team is in the lead yet."
+        
+
   return message
 
 def get_schedule(category, period=""):
