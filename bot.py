@@ -12,6 +12,13 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
+headers = {
+    'User-Agent': 'Deep Cut Bot',
+    'From': 'https://github.com/rdvansloten/deep-cut-bot',
+    'Contact': 'rudy@rdvansloten.com',
+    'Message': 'Thank you so much for your wonderful data sources.'
+}
+
 def get_schedule_time(category, end_time, start_time=""):
   start_time = "" if not start_time else parser.parse(start_time).astimezone(timezone(timedelta(hours=0), name="UTC"))
   end_time = "" if not end_time else parser.parse(end_time).astimezone(timezone(timedelta(hours=0), name="UTC"))
@@ -59,7 +66,7 @@ def get_song(category):
   return message
 
 def get_gear(category):
-  json_response = requests.get(f"https://splatoon3.ink/data/gear.json").json()
+  json_response = requests.get(f"https://splatoon3.ink/data/gear.json", headers=headers).json()
   now = datetime.now(ZoneInfo("Europe/London")).strftime("%Y-%m-%dT%H:%M:%SZ")
   utc_time = timezone(timedelta(hours=0), name="UTC")
 
@@ -95,7 +102,7 @@ def get_gear(category):
   return message
 
 def get_splatfest(period):
-  json_response = requests.get(f"https://splatoon3.ink/data/festivals.json").json()
+  json_response = requests.get(f"https://splatoon3.ink/data/festivals.json", headers=headers).json()
   instance = 1 if period == "previous" else 0
 
   if json_response["US"]["data"]["festRecords"]["nodes"][instance] == 0 and json_response["US"]["data"]["festRecords"]["nodes"][instance]["state"] == "CLOSED":
@@ -154,7 +161,7 @@ def get_splatfest(period):
   return message
 
 def get_schedule(category, period=""):
-  json_response = requests.get(f"https://splatoon3.ink/data/schedules.json").json()
+  json_response = requests.get(f"https://splatoon3.ink/data/schedules.json", headers=headers).json()
   now = datetime.now(ZoneInfo("Europe/London")).strftime("%Y-%m-%dT%H:%M:%SZ")
   
   instance = 1 if period == "next" else 0
