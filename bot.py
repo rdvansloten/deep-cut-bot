@@ -117,7 +117,7 @@ def get_splatfest(period):
     score = ""
 
     for k, v in enumerate(splatfest_result["teams"]):
-      message += f"** TEAM {i['teamName'].upper()} **\n"
+      message += f"** TEAM {v['teamName'].upper()} **\n"
       message += "```"
       message += f"Sneak Peek   : {'{:.0%}'.format(v['result']['horagaiRatio'])}\n"
       message += f"Popularity   : {'{:.0%}'.format(v['result']['voteRatio'])}\n"
