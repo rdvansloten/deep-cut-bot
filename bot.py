@@ -68,7 +68,6 @@ def get_song(category):
 def get_gear(category):
   json_response = requests.get(f"https://splatoon3.ink/data/gear.json", headers=headers).json()
   now = datetime.now(ZoneInfo("Europe/London")).strftime("%Y-%m-%dT%H:%M:%SZ")
-  utc_time = timezone(timedelta(hours=0), name="UTC")
 
   if category == "daily-drop":
     data = json_response["data"]["gesotown"]["pickupBrand"]
@@ -162,7 +161,6 @@ def get_splatfest(period):
 
 def get_schedule(category, period=""):
   json_response = requests.get(f"https://splatoon3.ink/data/schedules.json", headers=headers).json()
-  now = datetime.now(ZoneInfo("Europe/London")).strftime("%Y-%m-%dT%H:%M:%SZ")
   
   instance = 1 if period == "next" else 0
   when = "_NEXT_" if period == "next" else ""
