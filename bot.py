@@ -97,21 +97,22 @@ def get_gear(category):
 def get_splatfest(period):
   json_response = requests.get(f"https://splatoon3.ink/data/festivals.json").json()
   instance = 1 if period == "previous" else 0
+  splatfest_result = json_response["US"]["data"]["festRecords"]["nodes"][instance]
 
-  splatfest_result = json_response["US"]["data"]["festRecords"]["nodes"][instance]     
-  message = f"**SPLATFEST: {splatfest_result['title'].upper()}** {'_'+get_schedule_time(category='ends', end_time=splatfest_result['endTime'])+'_' if period == 'now' else ''}\n"
-  message += f"{get_schedule_time(category='range', start_time=splatfest_result['startTime'], end_time=splatfest_result['endTime'])}\n\n"
-
-  for i in splatfest_result["teams"]:
-    message += f"\n"
-    message += f"** TEAM {i['teamName'].upper()} **\n"
-    message += f"- Sneak Peek: {'{:.0%}'.format(i['result']['horagaiRatio'])}\n"
-    message += f"- Popularity: {'{:.0%}'.format(i['result']['voteRatio'])}\n"
-    message += f"- Regular Mode Clout: {'{:.0%}'.format(i['result']['regularContributionRatio'])}\n"
-    message += f"- Pro Mode Clout {'{:.0%}'.format(i['result']['challengeContributionRatio'])}\n"
-
-  else:
+  if period == "now" and splatfest_result['state'] == "CLOSED":
     message = f"There is currently no Splatfest going on. Please check back later."
+
+  else: 
+    message = f"**SPLATFEST: {splatfest_result['title'].upper()}** {'_'+get_schedule_time(category='ends', end_time=splatfest_result['endTime'])+'_' if period == 'now' else ''}\n"
+    message += f"{get_schedule_time(category='range', start_time=splatfest_result['startTime'], end_time=splatfest_result['endTime'])}\n\n"
+
+    for i in splatfest_result["teams"]:
+      message += f"\n"
+      message += f"** TEAM {i['teamName'].upper()} **\n"
+      message += f"- Sneak Peek: {'{:.0%}'.format(i['result']['horagaiRatio'])}\n"
+      message += f"- Popularity: {'{:.0%}'.format(i['result']['voteRatio'])}\n"
+      message += f"- Regular Mode Clout: {'{:.0%}'.format(i['result']['regularContributionRatio'])}\n"
+      message += f"- Pro Mode Clout {'{:.0%}'.format(i['result']['challengeContributionRatio'])}\n"
   
   return message
 
