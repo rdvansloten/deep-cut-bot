@@ -97,8 +97,14 @@ def get_gear(category):
 def get_splatfest(period):
   json_response = requests.get(f"https://splatoon3.ink/data/festivals.json").json()
   instance = 1 if period == "previous" else 0
-  splatfest_result = json_response["US"]["data"]["festRecords"]["nodes"][instance]
 
+  if json_response["US"]["data"]["festRecords"]["nodes"][instance] == 0 and json_response["US"]["data"]["festRecords"]["nodes"][instance]["state"] == "CLOSED":
+    instance = 1
+  else:
+    instance = 0
+    
+  splatfest_result = json_response["US"]["data"]["festRecords"]["nodes"][instance]
+  
   if period == "now" and splatfest_result['state'] == "CLOSED":
     message = f"There is currently no Splatfest going on. Please check back later."
 
