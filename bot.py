@@ -99,7 +99,8 @@ def get_splatfest(period):
   instance = 1 if period == "previous" else 0
 
   splatfest_result = json_response["US"]["data"]["festRecords"]["nodes"][instance]     
-  message = f"**{splatfest_result['title'].upper()}** ({get_schedule_time(category='range', start_time=splatfest_result['startTime'], end_time=splatfest_result['endTime'])}\n\n"
+  message = f"**SPLATFEST: {splatfest_result['title'].upper()}** {'_'+get_schedule_time(category='ends', end_time=splatfest_result['endTime'])+'_' if period == 'now' else ''}\n"
+  message += f"{get_schedule_time(category='range', start_time=splatfest_result['startTime'], end_time=splatfest_result['endTime'])}\n\n"
 
   for i in splatfest_result["teams"]:
     message += f"\n"
