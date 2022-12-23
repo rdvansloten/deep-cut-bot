@@ -272,7 +272,7 @@ class splatfest(app_commands.Group):
   
   @app_commands.command(name="previous", description="Get the previous Splatfest results.")
   async def now(self, interaction: discord.Interaction) -> None:
-    await interaction.response.send_message(get_gear(period = "previous"), suppress_embeds=True)
+    await interaction.response.send_message(get_splatfest(period = "previous"), suppress_embeds=True)
 
 tree.add_command(splatfest(name="splatfest", description = "Get Splatfest data."))
 
