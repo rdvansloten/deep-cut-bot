@@ -1,0 +1,1 @@
+docker run -d -p --env-file discord-token.txt rdvansloten/deepcutbot

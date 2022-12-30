@@ -102,12 +102,11 @@ def get_gear(category):
 
 def get_splatfest(period):
   json_response = requests.get(f"https://splatoon3.ink/data/festivals.json", headers=headers).json()
-  instance = 1 if period == "previous" else 0
 
-  if json_response["US"]["data"]["festRecords"]["nodes"][instance] == 0 and json_response["US"]["data"]["festRecords"]["nodes"][instance]["state"] == "CLOSED":
-    instance = 1
-  else:
+  if json_response["US"]["data"]["festRecords"]["nodes"][0]["state"] != "CLOSED" and period == "now":
     instance = 0
+  else:
+    instance = 1
     
   splatfest_result = json_response["US"]["data"]["festRecords"]["nodes"][instance]
 
@@ -115,24 +114,44 @@ def get_splatfest(period):
     message = f"There is currently no Splatfest going on. Please check back later."
 
   else: 
-    message = f"**SPLATFEST: {splatfest_result['title'].upper()}** {'_'+get_schedule_time(category='ends', end_time=splatfest_result['endTime'])+'_' if period == 'now' else ''}\n"
+    message = f"**SPLATFEST: {splatfest_result['title'].upper()}**\n {'_'+get_schedule_time(category='ends', end_time=splatfest_result['endTime'])+'_' if period == 'now' else ''}\n"
     message += f"{get_schedule_time(category='range', start_time=splatfest_result['startTime'], end_time=splatfest_result['endTime'])}\n\n"
 
     current_lead_score = 0
     current_lead_team = ""
     score = ""
+    index = 0
 
     for k, v in enumerate(splatfest_result["teams"]):
       message += f"** TEAM {v['teamName'].upper()} **\n"
       message += "```"
-      message += f"Sneak Peek   : {'{:.0%}'.format(v['result']['horagaiRatio'])}\n"
-      message += f"Popularity   : {'{:.0%}'.format(v['result']['voteRatio'])}\n"
-      message += f"Normal Clout : {'{:.0%}'.format(v['result']['regularContributionRatio'])}\n"
-      message += f"Pro Clout    : {'{:.0%}'.format(v['result']['challengeContributionRatio'])}\n"
+      try:
+        message += f"Sneak Peek   : {'{:.2%}'.format(v['result']['horagaiRatio'])}\n"
+      except:
+        message += f"Sneak Peek   : Pending\n"
+
+      try:
+        message += f"Popularity   : {'{:.2%}'.format(v['result']['voteRatio'])}\n"
+      except: 
+        message += f"Popularity   : Pending\n"
+
+      try:
+        message += f"Normal Clout : {'{:.2%}'.format(v['result']['regularContributionRatio'])}\n"
+      except: 
+        message += f"Normal Clout : Pending\n"
+
+      try:
+        message += f"Pro Clout    : {'{:.2%}'.format(v['result']['challengeContributionRatio'])}\n"
+      except: 
+        message += f"Pro Clout    : Pending\n"
+
       message += "```"
       message += f"\n"
       
-      score = v['result']['horagaiRatio'] + v['result']['voteRatio'] + v['result']['regularContributionRatio'] + v['result']['challengeContributionRatio']
+      try:
+        score = v['result']['horagaiRatio'] + v['result']['voteRatio'] + v['result']['regularContributionRatio'] + v['result']['challengeContributionRatio']
+      except:
+        score = 0
 
       if score > current_lead_score:
         current_lead_score = score
@@ -151,7 +170,7 @@ def get_splatfest(period):
 
     if current_lead_team and current_lead_score > 0 and splatfest_result['state'] == "CLOSED":
       message += f"Winner: **TEAM {current_lead_team}** ({current_lead_idol})"
-    elif current_lead_team and current_lead_score > 0 and splatfest_result['state'] == "OPEN":
+    elif current_lead_team and current_lead_score > 0 and splatfest_result['state'] != "CLOSED":
       message += f"Currently in the lead: **TEAM {current_lead_team}** ({current_lead_idol})"
     else:
       message += f"Results are pending. No team is in the lead yet."
