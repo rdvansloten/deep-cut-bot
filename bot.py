@@ -192,6 +192,7 @@ def get_schedule(category, period=""):
 
     salmon_run_schedule = json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"][instance]
     salmon_dict["description"] = f"**SALMON RUN**   {'_'+get_schedule_time(category='ends', end_time=salmon_run_schedule['endTime'])+'_' if period == 'now' else when}"
+    
     salmon_dict["stage"] = f"{salmon_run_schedule['setting']['coopStage']['name']}"
     for i in salmon_run_schedule["setting"]["weapons"]:
       if i['name'] == "Random":
@@ -199,7 +200,11 @@ def get_schedule(category, period=""):
       else:
         salmon_dict['weapons'].append(f"[{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')})")
 
-    message = f"{salmon_dict['description']} \n\n"
+    message = f"{salmon_dict['description']} \n"
+    if period == "next":
+      message += f"{get_schedule_time(category='range', start_time=salmon_run_schedule['startTime'], end_time=salmon_run_schedule['endTime'])}\n\n"
+    else:
+      message += "\n"
     message += f"**{salmon_dict['stage']}:**\n"
     for i in salmon_dict["weapons"]:
       message += f"- {i}\n"
