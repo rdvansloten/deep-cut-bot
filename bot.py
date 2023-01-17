@@ -105,6 +105,8 @@ def get_splatfest(period):
 
   if json_response["US"]["data"]["festRecords"]["nodes"][0]["state"] != "CLOSED" and period == "now":
     instance = 0
+  elif json_response["US"]["data"]["festRecords"]["nodes"][0]["state"] == "CLOSED" and period == "previous":
+    instance = 0
   else:
     instance = 1
     
@@ -200,7 +202,8 @@ def get_schedule(category, period=""):
         # message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
         salmon_dict['weapons'].append(f"[{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')})")
 
-    message = salmon_dict
+    for i in salmon_dict:
+      message += i
 
   elif category == "anarchy-battle":
     anarchy_battle_schedule = json_response["data"]["bankaraSchedules"]["nodes"][instance]
