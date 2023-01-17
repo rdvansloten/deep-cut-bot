@@ -192,7 +192,7 @@ def get_schedule(category, period=""):
 
     salmon_run_schedule = json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"][instance]
     salmon_dict["description"] = f"**SALMON RUN**   {'_'+get_schedule_time(category='ends', end_time=salmon_run_schedule['endTime'])+'_' if period == 'now' else when}"
-    salmon_dict["stage"] = f"** {salmon_run_schedule['setting']['coopStage']['name']}: **\n"
+    salmon_dict["stage"] = f"{salmon_run_schedule['setting']['coopStage']['name']}"
     for i in salmon_run_schedule["setting"]["weapons"]:
       if i['name'] == "Random":
         salmon_dict['weapons'].append(f"[{i['name']}](https://splatoonwiki.org/wiki/Salmon_Run#Wildcard_rotation)")
@@ -200,9 +200,9 @@ def get_schedule(category, period=""):
         salmon_dict['weapons'].append(f"[{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')})")
 
     message = f"{salmon_dict['description']} \n\n"
-    message += f"{salmon_dict['stage']}\n"
+    message += f"**{salmon_dict['stage']}:**\n"
     for i in salmon_dict["weapons"]:
-      message += f"{i}\n"
+      message += f"- {i}\n"
 
   elif category == "anarchy-battle":
     anarchy_battle_schedule = json_response["data"]["bankaraSchedules"]["nodes"][instance]
