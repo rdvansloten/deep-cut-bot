@@ -202,7 +202,8 @@ def get_schedule(category, period=""):
         # message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
         salmon_dict['weapons'].append(f"[{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')})")
 
-    for i in salmon_dict:
+    message = f"{salmon_dict['description']} {salmon_dict['stage']}"
+    for i in salmon_dict["weapons"]:
       message += i
 
   elif category == "anarchy-battle":
