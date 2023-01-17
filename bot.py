@@ -323,7 +323,7 @@ tree.add_command(x_battle(name="league-battle", description = "Get League Battle
 class salmon_run(app_commands.Group):
   @app_commands.command(name="next", description="Get the next Salmon Run rotation.")
   async def next(self, interaction: discord.Interaction) -> None:
-    await interaction.response.send_message(get_schedule("salmon-run", period = "next")["weapons"], suppress_embeds=True)
+    await interaction.response.send_message(get_schedule("salmon-run", period = "next"), suppress_embeds=True)
 
   @app_commands.command(name="now", description="Get the current Salmon Run rotation.")
   async def now(self, interaction: discord.Interaction) -> None:
