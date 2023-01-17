@@ -192,19 +192,17 @@ def get_schedule(category, period=""):
 
     salmon_run_schedule = json_response["data"]["coopGroupingSchedule"]["regularSchedules"]["nodes"][instance]
     salmon_dict["description"] = f"**SALMON RUN**   {'_'+get_schedule_time(category='ends', end_time=salmon_run_schedule['endTime'])+'_' if period == 'now' else when}"
-    # message += f"{get_schedule_time(category='range', start_time=salmon_run_schedule['startTime'], end_time=salmon_run_schedule['endTime'])}\n\n"
     salmon_dict["stage"] = f"** {salmon_run_schedule['setting']['coopStage']['name']}: **\n"
     for i in salmon_run_schedule["setting"]["weapons"]:
       if i['name'] == "Random":
-        # message += f"- [{i['name']}](https://splatoonwiki.org/wiki/Salmon_Run#Wildcard_rotation) \n"
         salmon_dict['weapons'].append(f"[{i['name']}](https://splatoonwiki.org/wiki/Salmon_Run#Wildcard_rotation)")
       else:
-        # message += f"- [{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}) \n"
         salmon_dict['weapons'].append(f"[{i['name']}](https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')})")
 
-    message = f"{salmon_dict['description']} {salmon_dict['stage']}"
+    message = f"{salmon_dict['description']} \n\n"
+    message += f"{salmon_dict['stage']}\n"
     for i in salmon_dict["weapons"]:
-      message += i
+      message += f"{i}\n"
 
   elif category == "anarchy-battle":
     anarchy_battle_schedule = json_response["data"]["bankaraSchedules"]["nodes"][instance]
