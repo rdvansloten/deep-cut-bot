@@ -112,7 +112,7 @@ def get_splatfest():
     
   splatfest_result = json_response["US"]["data"]["festRecords"]["nodes"][0]
 
-  message = f"**SPLATFEST: {splatfest_result['title'].upper()}**\n {'_'+get_schedule_time(category='ends', end_time=splatfest_result['endTime'])+'_' if period == 'now' else ''}\n"
+  message = f"**SPLATFEST: {splatfest_result['title'].upper()}**\n {'_'+get_schedule_time(category='ends', end_time=splatfest_result['endTime'])}\n"
   message += f"{get_schedule_time(category='range', start_time=splatfest_result['startTime'], end_time=splatfest_result['endTime'])}\n\n"
 
   current_lead_score = 0
