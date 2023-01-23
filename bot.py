@@ -337,11 +337,18 @@ class salmon_run(app_commands.Group):
   async def now(self, interaction: discord.Interaction) -> None:
     await interaction.response.send_message(get_schedule("salmon-run", period = "now"), suppress_embeds=True)
 
+  # @app_commands.command(name="subscribe", description="Subscribe this channel to the Salmon Run schedule.")
+  # async def subscribe(self, interaction: discord.Interaction):
+  #   guild_id = interaction.message.guild.id
+  #   channel_id = interaction.message.channel.id
+  #   await interaction.response.send_message(subscribe_channel(guild_id=guild_id, channel_id=channel_id), suppress_embeds=True)
+
   @app_commands.command(name="subscribe", description="Subscribe this channel to the Salmon Run schedule.")
-  async def subscribe(self, interaction: discord.Interaction):
-    guild_id = interaction.message.guild.id
-    channel_id = interaction.message.channel.id
-    await interaction.response.send_message(subscribe_channel(guild_id=guild_id, channel_id=channel_id), suppress_embeds=True)
+  async def subscribe(ctx):
+      message = ctx.message
+      channel_id = message.channel.id
+      guild_id = message.guild.id
+      await ctx.send(f"Channel ID: {channel_id}, Guild ID: {guild_id}")
 
 tree.add_command(salmon_run(name="salmon-run", description = "Get Salmon Run schedules."))
 
