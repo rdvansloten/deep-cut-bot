@@ -8,7 +8,7 @@ import random
 import discord
 from discord import app_commands
 from dotenv import load_dotenv
-from discord.ext import tasks
+from discord.ext import tasks, commands
 import csv
 
 load_dotenv()
@@ -345,6 +345,7 @@ class salmon_run(app_commands.Group):
     await interaction.response.send_message(get_schedule("salmon-run", period = "now"), suppress_embeds=True)
 
   @app_commands.command(name="subscribe", description="Subscribe this channel to the Salmon Run schedule.")
+  @commands.has_permissions(administrator=True)
   async def subscribe(self, interaction: discord.Interaction):
     guild_id = interaction.guild.id
     channel_id = interaction.channel.id
