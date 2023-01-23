@@ -100,83 +100,83 @@ def get_gear(category):
   
   return message
 
-def get_splatfest(period):
+def get_splatfest():
   json_response = requests.get(f"https://splatoon3.ink/data/festivals.json", headers=headers).json()
 
-  if json_response["US"]["data"]["festRecords"]["nodes"][0]["state"] != "CLOSED" and period == "now":
-    instance = 0
-  elif json_response["US"]["data"]["festRecords"]["nodes"][0]["state"] == "CLOSED" and period == "previous":
-    instance = 0
-  else:
-    instance = 1
+  # if json_response["US"]["data"]["festRecords"]["nodes"][0]["state"] != "CLOSED" and period == "now":
+  #   instance = 0
+  # elif json_response["US"]["data"]["festRecords"]["nodes"][0]["state"] == "CLOSED" and period == "previous":
+  #   instance = 0
+  # else:
+  #   instance = 1
     
-  splatfest_result = json_response["US"]["data"]["festRecords"]["nodes"][instance]
+  splatfest_result = json_response["US"]["data"]["festRecords"]["nodes"][0]
 
-  if period == "now" and splatfest_result['state'] == "CLOSED":
-    message = f"There is currently no Splatfest going on. Please check back later."
+  message = f"**SPLATFEST: {splatfest_result['title'].upper()}**\n {'_'+get_schedule_time(category='ends', end_time=splatfest_result['endTime'])+'_' if period == 'now' else ''}\n"
+  message += f"{get_schedule_time(category='range', start_time=splatfest_result['startTime'], end_time=splatfest_result['endTime'])}\n\n"
 
-  else: 
-    message = f"**SPLATFEST: {splatfest_result['title'].upper()}**\n {'_'+get_schedule_time(category='ends', end_time=splatfest_result['endTime'])+'_' if period == 'now' else ''}\n"
-    message += f"{get_schedule_time(category='range', start_time=splatfest_result['startTime'], end_time=splatfest_result['endTime'])}\n\n"
+  current_lead_score = 0
+  current_lead_team = ""
+  score = ""
+  index = 0
 
-    current_lead_score = 0
-    current_lead_team = ""
-    score = ""
-    index = 0
+  for k, v in enumerate(splatfest_result["teams"]):
+    message += f"** TEAM {v['teamName'].upper()} **\n"
+    message += "```"
+    try:
+      message += f"Sneak Peek     : {'{:.2%}'.format(v['result']['horagaiRatio'])}\n"
+    except:
+      message += f"Sneak Peek     : Pending\n"
 
-    for k, v in enumerate(splatfest_result["teams"]):
-      message += f"** TEAM {v['teamName'].upper()} **\n"
-      message += "```"
-      try:
-        message += f"Sneak Peek   : {'{:.2%}'.format(v['result']['horagaiRatio'])}\n"
-      except:
-        message += f"Sneak Peek   : Pending\n"
+    try:
+      message += f"Popularity     : {'{:.2%}'.format(v['result']['voteRatio'])}\n"
+    except: 
+      message += f"Popularity     : Pending\n"
 
-      try:
-        message += f"Popularity   : {'{:.2%}'.format(v['result']['voteRatio'])}\n"
-      except: 
-        message += f"Popularity   : Pending\n"
+    try:
+      message += f"Normal Clout   : {'{:.2%}'.format(v['result']['regularContributionRatio'])}\n"
+    except: 
+      message += f"Normal Clout   : Pending\n"
 
-      try:
-        message += f"Normal Clout : {'{:.2%}'.format(v['result']['regularContributionRatio'])}\n"
-      except: 
-        message += f"Normal Clout : Pending\n"
+    try:
+      message += f"Pro Clout      : {'{:.2%}'.format(v['result']['challengeContributionRatio'])}\n"
+    except: 
+      message += f"Pro Clout      : Pending\n"
 
-      try:
-        message += f"Pro Clout    : {'{:.2%}'.format(v['result']['challengeContributionRatio'])}\n"
-      except: 
-        message += f"Pro Clout    : Pending\n"
-
-      message += "```"
-      message += f"\n"
+    try:
+      message += f"Tricolor Clout : {'{:.2%}'.format(v['result']['tricolorContributionRatio'])}\n"
       
-      try:
-        score = v['result']['horagaiRatio'] + v['result']['voteRatio'] + v['result']['regularContributionRatio'] + v['result']['challengeContributionRatio']
-      except:
-        score = 0
+    except:
+      message += f"Tricolor Clout : Pending \n"
 
-      if score > current_lead_score:
-        current_lead_score = score
-        current_lead_team = v['teamName'].upper()
-        index = k
+    message += "```"
+    message += f"\n"
     
-    if index == 0:
-      current_lead_idol = "Shiver"
-    elif index == 1:
-      current_lead_idol = "Frye"
-    elif index == 2:
-      current_lead_idol = "Big Man"
-    else:
-      current_lead_idol = "N/A"
+    try:
+      score = v['result']['horagaiRatio'] + v['result']['voteRatio'] + v['result']['regularContributionRatio'] + v['result']['challengeContributionRatio'] + v['result']['tricolorContributionRatio']
+    except:
+      score = 0
 
+    if score > current_lead_score:
+      current_lead_score = score
+      current_lead_team = v['teamName'].upper()
+      index = k
+  
+  if index == 0:
+    current_lead_idol = "Shiver"
+  elif index == 1:
+    current_lead_idol = "Frye"
+  elif index == 2:
+    current_lead_idol = "Big Man"
+  else:
+    current_lead_idol = "N/A"
 
-    if current_lead_team and current_lead_score > 0 and splatfest_result['state'] == "CLOSED":
-      message += f"Winner: **TEAM {current_lead_team}** ({current_lead_idol})"
-    elif current_lead_team and current_lead_score > 0 and splatfest_result['state'] != "CLOSED":
-      message += f"Currently in the lead: **TEAM {current_lead_team}** ({current_lead_idol})"
-    else:
-      message += f"Results are pending. No team is in the lead yet."
-        
+  if current_lead_team and current_lead_score > 0 and splatfest_result['state'] == "CLOSED":
+    message += f"Winner: **TEAM {current_lead_team}** ({current_lead_idol})"
+  elif current_lead_team and current_lead_score > 0 and splatfest_result['state'] != "CLOSED":
+    message += f"Currently in the lead: **TEAM {current_lead_team}** ({current_lead_idol})"
+  else:
+    message += f"Results are pending. No team is in the lead yet."
 
   return message
 
@@ -252,6 +252,9 @@ def get_schedule(category, period=""):
     message = "No valid game mode selected"
 
   return message
+
+def subscribe_channel(guild_id, channel_id):
+  return f"Server ID = {guild_id}, Channel ID = {channel_id}"
 
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
@@ -334,6 +337,12 @@ class salmon_run(app_commands.Group):
   async def now(self, interaction: discord.Interaction) -> None:
     await interaction.response.send_message(get_schedule("salmon-run", period = "now"), suppress_embeds=True)
 
+  @app_commands.command(name="subscribe", description="Subscribe this channel to the Salmon Run schedule.")
+  async def subscribe(self, interaction: discord.Interaction) -> None:
+    guild_id = interaction.message.guild.id
+    channel_id = interaction.message.channel.id
+    await interaction.response.send_message(subscribe_channel(guild_id=guild_id, channel_id=channel_id), suppress_embeds=True)
+
 tree.add_command(salmon_run(name="salmon-run", description = "Get Salmon Run schedules."))
 
 # Splatnet Shop
@@ -350,13 +359,9 @@ tree.add_command(splatnet_shop(name="splatnet-shop", description = "Get Splatnet
 
 # Splatfest
 class splatfest(app_commands.Group):
-  # @app_commands.command(name="now", description="Get the current Splatfest results.")
-  # async def next(self, interaction: discord.Interaction) -> None:
-  #   await interaction.response.send_message(get_splatfest(period = "now"), suppress_embeds=True)
-  
-  @app_commands.command(name="previous", description="Get the previous Splatfest results.")
+  @app_commands.command(name="results", description="Get the latest Splatfest results.")
   async def now(self, interaction: discord.Interaction) -> None:
-    await interaction.response.send_message(get_splatfest(period = "previous"), suppress_embeds=True)
+    await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
 
 tree.add_command(splatfest(name="splatfest", description = "Get Splatfest data."))
 
