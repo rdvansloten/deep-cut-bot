@@ -255,12 +255,12 @@ def get_schedule(category, period=""):
 
   return message
 
-def subscribe_channel(guild_id = int, channel_id = int):
+def subscribe_channel(guild_id = int, channel_id = int, guild_name = str, channel_name = str):
   with open('channels.csv', 'a', newline='', encoding='utf-8') as csvfile:
       writer = csv.writer(csvfile)
       writer.writerow([guild_id, channel_id])
 
-  return f"Added Guild {guild_id} and Channel ID {channel_id} to the Salmon Run schedule."
+  return f"Added Guild {guild_name} ({guild_id}) and Channel ID {channel_name} ({channel_id}) to the Salmon Run schedule."
 
 
 intents = discord.Intents.default()
@@ -348,8 +348,11 @@ class salmon_run(app_commands.Group):
   async def subscribe(self, interaction: discord.Interaction):
     guild_id = interaction.guild.id
     channel_id = interaction.channel.id
+    guild_name = interaction.guild.name
+    channel_name = interaction.channel.name
+
     # await interaction.response.send_message(f"Guild ID: {guild_id}, Channel ID: {channel_id}", suppress_embeds=True)
-    await interaction.response.send_message(subscribe_channel(guild_id=guild_id, channel_id=channel_id), suppress_embeds=True)
+    await interaction.response.send_message(subscribe_channel(guild_id=guild_id, guild_name=guild_name, channel_id=channel_id, channel_name=channel_name), suppress_embeds=True)
 
 tree.add_command(salmon_run(name="salmon-run", description = "Get Salmon Run schedules."))
 
@@ -410,7 +413,7 @@ async def send_salmon_run_schedule():
 
 @client.event
 async def on_ready():
-  send_salmon_run_schedule.start()
+  # send_salmon_run_schedule.start()
   await tree.sync()
   print("Ready!")
 
