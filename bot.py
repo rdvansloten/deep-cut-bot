@@ -260,7 +260,7 @@ def subscribe_channel(guild_id = int, channel_id = int, guild_name = str, channe
       writer = csv.writer(csvfile)
       writer.writerow([guild_id, channel_id, guild_name, channel_name])
 
-  return f"Added Guild {guild_name} ({guild_id}) and Channel ID {channel_name} ({channel_id}) to the Salmon Run schedule."
+  return f"Added channel **{channel_name}** in server **{guild_name}** to the Salmon Run schedule."
 
 
 intents = discord.Intents.default()
@@ -409,11 +409,11 @@ async def send_salmon_run_schedule():
       print(f"Sending schedule to Guild {row[0]}, {row[1]}")
       guild = client.get_guild(int(row[0]))
       channel = guild.get_channel(int(row[1]))
-      await channel.send(f"Hello, this is a scheduled message for the {row[4]} channel in the server {row[3]}!")
+      await channel.send(f"Hello, this is a scheduled test message for the {row[4]} channel in the server {row[3]}!")
 
 @client.event
 async def on_ready():
-  # send_salmon_run_schedule.start()
+  send_salmon_run_schedule.start()
   await tree.sync()
   print("Ready!")
 
