@@ -394,8 +394,9 @@ tree.add_command(splatfest(name="splatfest", description = "Get Splatfest data."
 # Scheduled message
 @tasks.loop(seconds=30.0)
 async def send_scheduled_message():
-  guild = client.get_guild("1053636933240242227")
-  channel = guild.get_channel("1053796400716058687")
+
+  guild = client.get_guild(1053636933240242227)
+  channel = guild.get_channel(1053796400716058687)
   await channel.send("Hello, this is a scheduled message!")
 
 @client.event
