@@ -8,6 +8,7 @@ import random
 import discord
 from discord import app_commands
 from dotenv import load_dotenv
+from discord.ext import tasks, commands
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -389,6 +390,13 @@ tree.add_command(splatfest(name="splatfest", description = "Get Splatfest data."
 #     await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
 
 # tree.add_command(splatfest(name="splatfest", description = "Get Splatfest results."))
+
+# Scheduled message
+@tasks.loop(seconds=30.0)
+async def send_scheduled_message():
+    guild = client.get_guild("1053636933240242227")
+    channel = guild.get_channel("1053796400716058687")
+    await channel.send("Hello, this is a scheduled message!")
 
 @client.event
 async def on_ready():
