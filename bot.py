@@ -8,16 +8,17 @@ import random
 import discord
 from discord import app_commands
 from dotenv import load_dotenv
-from discord.ext import tasks, commands
+from discord.ext import tasks
+import csv
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
 headers = {
-    'User-Agent': 'Deep Cut Bot',
-    'From': 'https://github.com/rdvansloten/deep-cut-bot',
-    'Contact': 'rudy@rdvansloten.com',
-    'Message': 'Thank you so much for your wonderful data sources.'
+  'User-Agent': 'Deep Cut Bot',
+  'From': 'https://github.com/rdvansloten/deep-cut-bot',
+  'Contact': 'rudy@rdvansloten.com',
+  'Message': 'Thank you so much for your wonderful data sources.'
 }
 
 def get_schedule_time(category, end_time, start_time=""):
@@ -254,8 +255,13 @@ def get_schedule(category, period=""):
 
   return message
 
-def subscribe_channel(guild_id = "", channel_id = ""):
-  return f"Server ID = {guild_id}, Channel ID = {channel_id}"
+def subscribe_channel(guild_id = int, channel_id = int):
+  with open('channels.csv', 'a', newline='', encoding='utf-8') as csvfile:
+      writer = csv.writer(csvfile)
+      writer.writerow([guild_id, channel_id])
+
+  return f"Added Guild {guild_id} and Channel ID {channel_id} to the Salmon Run schedule."
+
 
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
@@ -392,11 +398,15 @@ tree.add_command(splatfest(name="splatfest", description = "Get Splatfest data."
 # tree.add_command(splatfest(name="splatfest", description = "Get Splatfest results."))
 
 # Scheduled message
-@tasks.loop(hours=1)
+@tasks.loop(minutes=1)
 async def send_salmon_run_schedule():
-  guild = client.get_guild(1053636933240242227)
-  channel = guild.get_channel(1053796400716058687)
-  await channel.send("Hello, this is a scheduled message!")
+  with open('channels.csv', newline='', encoding='utf-8') as csvfile:
+    reader = csv.reader(csvfile)
+    for row in reader:
+      print(f"Sending schedule to Guild {row[0]}, {row[1]}")
+      guild = client.get_guild(int(row[0]))
+      channel = guild.get_channel(int(row[1]))
+      await channel.send("Hello, this is a scheduled message!")
 
 @client.event
 async def on_ready():
