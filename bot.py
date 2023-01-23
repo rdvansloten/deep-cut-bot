@@ -253,7 +253,7 @@ def get_schedule(category, period=""):
 
   return message
 
-def subscribe_channel(guild_id, channel_id):
+def subscribe_channel(guild_id = "", channel_id = ""):
   return f"Server ID = {guild_id}, Channel ID = {channel_id}"
 
 intents = discord.Intents.default()
@@ -341,8 +341,8 @@ class salmon_run(app_commands.Group):
   async def subscribe(self, interaction: discord.Interaction):
     guild_id = interaction.guild.id
     channel_id = interaction.channel.id
-    await interaction.response.send_message(f"Guild ID: {guild_id}, Channel ID: {channel_id}", suppress_embeds=True)
-    # await interaction.response.send_message(subscribe_channel(guild_id=guild_id, channel_id=channel_id), suppress_embeds=True)
+    # await interaction.response.send_message(f"Guild ID: {guild_id}, Channel ID: {channel_id}", suppress_embeds=True)
+    await interaction.response.send_message(subscribe_channel(guild_id=guild_id, channel_id=channel_id), suppress_embeds=True)
 
 tree.add_command(salmon_run(name="salmon-run", description = "Get Salmon Run schedules."))
 
