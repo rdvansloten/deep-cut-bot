@@ -351,9 +351,11 @@ class salmon_run(app_commands.Group):
     channel_id = interaction.channel.id
     guild_name = interaction.guild.name
     channel_name = interaction.channel.name
+    user_name = interaction.user.guild_permissions.administrator
 
     # await interaction.response.send_message(f"Guild ID: {guild_id}, Channel ID: {channel_id}", suppress_embeds=True)
     await interaction.response.send_message(subscribe_channel(guild_id=guild_id, guild_name=guild_name, channel_id=channel_id, channel_name=channel_name), suppress_embeds=True)
+    await interaction.response.send_message(user_name, suppress_embeds=True)
 
 tree.add_command(salmon_run(name="salmon-run", description = "Get Salmon Run schedules."))
 

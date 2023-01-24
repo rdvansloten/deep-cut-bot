@@ -1,5 +1,8 @@
 pool: 'Azure Pipelines'
 
+variables:
+- group: temporary-vm
+
 trigger:
   - main
 
@@ -15,3 +18,18 @@ steps:
     tags: |
       $(Build.BuildId)
       latest
+
+- task: InstallSSHKey@0
+ inputs:
+   knownHostsEntry: $(vmkhentry)
+   sshPublicKey: $(vmpubkey)
+   sshKeySecureFile: temporaryvm_pvkey
+
+- task: SSH@0
+  inputs:
+    sshEndpoint: $(vmip)
+    runOptions: 'inline'
+    inline: |
+      docker rm -vf $(docker ps -aq) && docker rmi -f $(docker images -aq);
+      docker run --name deepcutbot -d --env-file discord-token.txt rdvansloten/deep-cut-bot:latest
+    readyTimeout: '20000'
