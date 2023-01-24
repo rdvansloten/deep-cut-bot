@@ -20,7 +20,7 @@ steps:
       latest
 
 - task: InstallSSHKey@0
- inputs:
+  inputs:
    knownHostsEntry: $(vmkhentry)
    sshPublicKey: $(vmpubkey)
    sshKeySecureFile: temporaryvm_pvkey
