@@ -255,12 +255,12 @@ def get_schedule(category, period=""):
 
   return message
 
-def subscribe_channel(guild_id = int, channel_id = int, guild_name = str, channel_name = str):
+def subscribe_channel(guild_id = int, channel_id = int, guild_name = str, channel_name = str, user_name = any):
   with open('channels.csv', 'a', newline='', encoding='utf-8') as csvfile:
       writer = csv.writer(csvfile)
       writer.writerow([guild_id, channel_id, guild_name, channel_name])
 
-  return f"Added channel **{channel_name}** in server **{guild_name}** to the Salmon Run schedule."
+  return f"Added channel **{channel_name}** in server **{guild_name}** to the Salmon Run schedule.\n User data: {user_name}"
 
 
 intents = discord.Intents.default()
@@ -354,8 +354,7 @@ class salmon_run(app_commands.Group):
     user_name = interaction.user.guild_permissions.administrator
 
     # await interaction.response.send_message(f"Guild ID: {guild_id}, Channel ID: {channel_id}", suppress_embeds=True)
-    await interaction.response.send_message(subscribe_channel(guild_id=guild_id, guild_name=guild_name, channel_id=channel_id, channel_name=channel_name), suppress_embeds=True)
-    await interaction.response.send_message(user_name, suppress_embeds=True)
+    await interaction.response.send_message(subscribe_channel(guild_id=guild_id, guild_name=guild_name, channel_id=channel_id, channel_name=channel_name, user_name=user_name), suppress_embeds=True)
 
 tree.add_command(salmon_run(name="salmon-run", description = "Get Salmon Run schedules."))
 
