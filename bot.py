@@ -472,7 +472,7 @@ async def send_salmon_run_schedule():
       print(f"Sending schedule to Guild {row[0]}, {row[1]}")
       guild = client.get_guild(int(row[0]))
       channel = guild.get_channel(int(row[1]))
-      await channel.send(f"Hello, this is a scheduled test message for the <#{row[3]}> channel!")
+      await channel.send(f"Hello, this is a scheduled test message for the **#{row[3]}** channel!")
 
 @client.event
 async def on_ready():
