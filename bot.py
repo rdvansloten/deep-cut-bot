@@ -282,8 +282,8 @@ def subscribe_channel(values = {}, csv_file = str):
   else:
     return f"Channel <#{values['channel_id']}> is already subscribed to the Salmon Run schedule."
 
-def unsubscribe_channel(values = {}, csv_file = str, administrator = bool):
-  if not administrator:
+def unsubscribe_channel(values = {}, csv_file = str):
+  if not values["administrator"]:
     return "Only Administrators can unsubscribe a channel from the Salmon Run schedule."
 
   # Remove entry from csv file
@@ -405,6 +405,17 @@ class salmon_run(app_commands.Group):
 
     # await interaction.response.send_message(f"Guild ID: {guild_id}, Channel ID: {channel_id}", suppress_embeds=True)
     await interaction.response.send_message(subscribe_channel(values=values, csv_file='channels.csv'), suppress_embeds=True)
+
+  async def unsubscribe(self, interaction: discord.Interaction):
+    values = {}
+    values["guild_id"] = interaction.guild.id
+    values["channel_id"] = interaction.channel.id
+    values["guild_name"] = interaction.guild.name
+    values["channel_name"] = interaction.channel.name
+    values["administrator"] = interaction.user.guild_permissions.administrator
+
+    # await interaction.response.send_message(f"Guild ID: {guild_id}, Channel ID: {channel_id}", suppress_embeds=True)
+    await interaction.response.send_message(unsubscribe_channel(values=values, csv_file='channels.csv'), suppress_embeds=True)
 
 tree.add_command(salmon_run(name="salmon-run", description = "Get Salmon Run schedules."))
 
