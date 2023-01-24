@@ -1,7 +1,7 @@
 pool: 'Azure Pipelines'
 
 variables:
-- group: temporary-vm
+- group: temporaryvm
 
 trigger:
   - main
