@@ -247,15 +247,65 @@ def get_schedule(category, period=""):
 
   return message
 
-def subscribe_channel(guild_id = int, channel_id = int, guild_name = str, channel_name = str, administrator = any):
-  if administrator:
-    with open('channels.csv', 'a', newline='', encoding='utf-8') as csvfile:
-        writer = csv.writer(csvfile)
-        writer.writerow([guild_id, channel_id, guild_name, channel_name])
+def value_in_csv(value, csv_file):
+  with open(csv_file, 'r') as f:
+    reader = csv.reader(f)
+    for row in reader:
+      if value in row:
+        return True
+  return False
 
-    return f"Added channel **{channel_name}** in server **{guild_name}** to the Salmon Run schedule."
+def check_csv(value = str, csv_file = str):
+  with open(csv_file, 'r') as f:
+    for row in csv.reader(f):
+      if value in row:
+        return True
+  return False
+
+def subscribe_channel(values = {}, csv_file = str):
+  if not values["administrator"]:
+    return "Only Administrators can subscribe a channel to the Salmon Run schedule."
+
+  # Add entry to csv file
+  if check_csv(value=values["channel_id"], csv_file=csv_file):
+    with open(csv_file, 'a', newline='', encoding='utf-8') as f:
+      csv.writer(f).writerow([
+        values["guild_id"], 
+        values["channel_id"], 
+        values["guild_name"], 
+        values["channel_name"]
+      ])
   else:
-    return f"Only Administrators can subscribe a channel to the Salmon Run schedule."
+    return "Channel is already subscribed to the Salmon Run schedule."
+
+def unsubscribe_channel(values = {}, csv_file = str, administrator = bool):
+  if not administrator:
+    return "Only Administrators can unsubscribe a channel from the Salmon Run schedule."
+
+  # Remove entry from csv file
+  if check_csv(value=values["channel_id"], csv_file=csv_file):
+    rows = []
+    with open(csv_file, "r") as f:
+      for row in csv.reader(f):
+        if row[1] != values["channel_id"]:
+          rows.append(row)
+
+      # Write the updated rows to a new CSV file
+      with open(csv_file, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerows(rows)
+  else:
+    return "Failed to unsubscribe. Channel was not subscribed to the Salmon Run schedule."
+
+# def subscribe_channel(guild_id = int, channel_id = int, guild_name = str, channel_name = str, administrator = any):
+#   if administrator:
+#     with open('channels.csv', 'a', newline='', encoding='utf-8') as csvfile:
+#         writer = csv.writer(csvfile)
+#         writer.writerow([guild_id, channel_id, guild_name, channel_name])
+
+#     return f"Added channel **{channel_name}** in server **{guild_name}** to the Salmon Run schedule."
+#   else:
+#     return f"Only Administrators can subscribe a channel to the Salmon Run schedule."
 
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
@@ -341,14 +391,15 @@ class salmon_run(app_commands.Group):
   @app_commands.command(name="subscribe", description="Subscribe this channel to the Salmon Run schedule.")
   @commands.has_guild_permissions(administrator=True)
   async def subscribe(self, interaction: discord.Interaction):
-    guild_id = interaction.guild.id
-    channel_id = interaction.channel.id
-    guild_name = interaction.guild.name
-    channel_name = interaction.channel.name
-    administrator = interaction.user.guild_permissions.administrator
+    values = {}
+    values["guild_id"] = interaction.guild.id
+    values["channel_id"] = interaction.channel.id
+    values["guild_name"] = interaction.guild.name
+    values["channel_name"] = interaction.channel.name
+    values["administrator"] = interaction.user.guild_permissions.administrator
 
     # await interaction.response.send_message(f"Guild ID: {guild_id}, Channel ID: {channel_id}", suppress_embeds=True)
-    await interaction.response.send_message(subscribe_channel(guild_id=guild_id, guild_name=guild_name, channel_id=channel_id, channel_name=channel_name, administrator=administrator), suppress_embeds=True)
+    await interaction.response.send_message(subscribe_channel(values=values), suppress_embeds=True)
 
 tree.add_command(salmon_run(name="salmon-run", description = "Get Salmon Run schedules."))
 
