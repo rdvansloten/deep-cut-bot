@@ -104,14 +104,6 @@ def get_gear(category):
 
 def get_splatfest():
   json_response = requests.get(f"https://splatoon3.ink/data/festivals.json", headers=headers).json()
-
-  # if json_response["US"]["data"]["festRecords"]["nodes"][0]["state"] != "CLOSED" and period == "now":
-  #   instance = 0
-  # elif json_response["US"]["data"]["festRecords"]["nodes"][0]["state"] == "CLOSED" and period == "previous":
-  #   instance = 0
-  # else:
-  #   instance = 1
-    
   splatfest_result = json_response["US"]["data"]["festRecords"]["nodes"][0]
 
   message = f"**SPLATFEST: {splatfest_result['title'].upper()}**\n"
@@ -255,13 +247,15 @@ def get_schedule(category, period=""):
 
   return message
 
-def subscribe_channel(guild_id = int, channel_id = int, guild_name = str, channel_name = str, user_name = any):
-  with open('channels.csv', 'a', newline='', encoding='utf-8') as csvfile:
-      writer = csv.writer(csvfile)
-      writer.writerow([guild_id, channel_id, guild_name, channel_name])
+def subscribe_channel(guild_id = int, channel_id = int, guild_name = str, channel_name = str, administrator = any):
+  if administrator:
+    with open('channels.csv', 'a', newline='', encoding='utf-8') as csvfile:
+        writer = csv.writer(csvfile)
+        writer.writerow([guild_id, channel_id, guild_name, channel_name])
 
-  return f"Added channel **{channel_name}** in server **{guild_name}** to the Salmon Run schedule.\n User data: {user_name}"
-
+    return f"Added channel **{channel_name}** in server **{guild_name}** to the Salmon Run schedule."
+  else:
+    return f"Only Administrators can subscribe a channel to the Salmon Run schedule."
 
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
@@ -351,10 +345,10 @@ class salmon_run(app_commands.Group):
     channel_id = interaction.channel.id
     guild_name = interaction.guild.name
     channel_name = interaction.channel.name
-    user_name = interaction.user.guild_permissions.administrator
+    administrator = interaction.user.guild_permissions.administrator
 
     # await interaction.response.send_message(f"Guild ID: {guild_id}, Channel ID: {channel_id}", suppress_embeds=True)
-    await interaction.response.send_message(subscribe_channel(guild_id=guild_id, guild_name=guild_name, channel_id=channel_id, channel_name=channel_name, user_name=user_name), suppress_embeds=True)
+    await interaction.response.send_message(subscribe_channel(guild_id=guild_id, guild_name=guild_name, channel_id=channel_id, channel_name=channel_name, administrator=administrator), suppress_embeds=True)
 
 tree.add_command(salmon_run(name="salmon-run", description = "Get Salmon Run schedules."))
 
