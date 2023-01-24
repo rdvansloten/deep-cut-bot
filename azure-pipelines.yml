@@ -17,6 +17,7 @@ steps:
       latest
 
 - task: SSH@0
+  displayName: Pull and Run the Docker Container
   inputs:
     sshEndpoint: 'TemporaryVM'
     runOptions: 'inline'
