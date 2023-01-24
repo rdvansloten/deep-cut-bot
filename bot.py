@@ -11,6 +11,9 @@ from dotenv import load_dotenv
 from discord.ext import tasks, commands
 import csv
 
+# Create csv
+open("channels.csv", 'w').close()
+
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
