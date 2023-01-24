@@ -278,8 +278,9 @@ def subscribe_channel(values = {}, csv_file = str):
         values["guild_name"], 
         values["channel_name"]
       ])
+      return f"Successfully subscribed **{values['channel_name']} to the Salmon Run schedule!"
   else:
-    return "Channel is already subscribed to the Salmon Run schedule."
+    return f"Channel **{values['channel_name']}** is already subscribed to the Salmon Run schedule."
 
 def unsubscribe_channel(values = {}, csv_file = str, administrator = bool):
   if not administrator:
@@ -297,8 +298,9 @@ def unsubscribe_channel(values = {}, csv_file = str, administrator = bool):
       with open(csv_file, 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         writer.writerows(rows)
+    return f"Successfully unsubscribed **{values['channel_name']} from the Salmon Run schedule!"
   else:
-    return "Failed to unsubscribe. Channel was not subscribed to the Salmon Run schedule."
+    return f"Failed to unsubscribe. Channel {values['channel_name']} was not subscribed to the Salmon Run schedule."
 
 # def subscribe_channel(guild_id = int, channel_id = int, guild_name = str, channel_name = str, administrator = any):
 #   if administrator:
