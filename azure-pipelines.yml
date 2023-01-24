@@ -1,7 +1,7 @@
 pool: 'Azure Pipelines'
 
-variables:
-- group: temporaryvm
+# variables:
+# - group: temporaryvm
 
 trigger:
   - main
@@ -19,15 +19,15 @@ steps:
       $(Build.BuildId)
       latest
 
-- task: InstallSSHKey@0
-  inputs:
-   knownHostsEntry: $(vmkhentry)
-   sshPublicKey: $(vmpubkey)
-   sshKeySecureFile: temporaryvm_pvkey
+# - task: InstallSSHKey@0
+#   inputs:
+#    knownHostsEntry: $(vmkhentry)
+#    sshPublicKey: $(vmpubkey)
+#    sshKeySecureFile: temporaryvm_pvkey
 
 - task: SSH@0
   inputs:
-    sshEndpoint: $(vmip)
+    sshEndpoint: 'TemporaryVM'
     runOptions: 'inline'
     inline: |
       docker rm -vf $(docker ps -aq) && docker rmi -f $(docker images -aq);
