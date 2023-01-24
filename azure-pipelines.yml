@@ -22,6 +22,7 @@ steps:
     sshEndpoint: 'TemporaryVM'
     runOptions: 'inline'
     inline: |
-      sudo docker rm -vf $(docker ps -aq) && docker rmi -f $(docker images -aq);
-      sudo docker run --name deepcutbot -d --env-file discord-token.txt rdvansloten/deep-cut-bot:latest
+      docker rm -vf $(docker ps -aq) && docker rmi -f $(docker images -aq);
+      docker run --name deepcutbot -d --env-file discord-token.txt rdvansloten/deep-cut-bot:latest
     readyTimeout: '20000'
+    interactiveSession: true
