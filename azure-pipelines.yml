@@ -1,8 +1,5 @@
 pool: 'Azure Pipelines'
 
-# variables:
-# - group: temporaryvm
-
 trigger:
   - main
 
@@ -18,12 +15,6 @@ steps:
     tags: |
       $(Build.BuildId)
       latest
-
-# - task: InstallSSHKey@0
-#   inputs:
-#    knownHostsEntry: $(vmkhentry)
-#    sshPublicKey: $(vmpubkey)
-#    sshKeySecureFile: temporaryvm_pvkey
 
 - task: SSH@0
   inputs:
