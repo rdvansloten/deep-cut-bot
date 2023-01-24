@@ -267,7 +267,7 @@ def subscribe_channel(values = {}, csv_file = str):
     return "Only Administrators can subscribe a channel to the Salmon Run schedule."
 
   # Add entry to csv file
-  if check_csv(value=values["channel_id"], csv_file=csv_file):
+  if not check_csv(value=values["channel_id"], csv_file=csv_file):
     with open(csv_file, 'a', newline='', encoding='utf-8') as f:
       csv.writer(f).writerow([
         values["guild_id"], 
@@ -399,7 +399,7 @@ class salmon_run(app_commands.Group):
     values["administrator"] = interaction.user.guild_permissions.administrator
 
     # await interaction.response.send_message(f"Guild ID: {guild_id}, Channel ID: {channel_id}", suppress_embeds=True)
-    await interaction.response.send_message(subscribe_channel(values=values), suppress_embeds=True)
+    await interaction.response.send_message(subscribe_channel(values=values, csv_file='channels.csv'), suppress_embeds=True)
 
 tree.add_command(salmon_run(name="salmon-run", description = "Get Salmon Run schedules."))
 
