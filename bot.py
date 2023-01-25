@@ -392,7 +392,6 @@ class salmon_run(app_commands.Group):
     await interaction.response.send_message(get_schedule("salmon-run", period = "now"), suppress_embeds=True)
 
   @app_commands.command(name="subscribe", description="Subscribe this channel to the Salmon Run schedule.")
-  @commands.has_guild_permissions(administrator=True)
   async def subscribe(self, interaction: discord.Interaction):
     values = {}
     values["guild_id"] = interaction.guild.id
