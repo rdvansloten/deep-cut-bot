@@ -270,7 +270,7 @@ def subscribe_channel(values = {}, csv_file = str):
     return "Only Administrators can subscribe a channel to the Salmon Run schedule."
 
   # Add entry to csv file
-  if check_csv(value=values["channel_id"], csv_file=csv_file):
+  if not check_csv(value=values["channel_id"], csv_file=csv_file):
     with open(csv_file, 'a', newline='', encoding='utf-8') as f:
       csv.writer(f).writerow([
         values["guild_id"], 
