@@ -11,9 +11,6 @@ from dotenv import load_dotenv
 from discord.ext import tasks, commands
 import csv
 
-# Create csv
-open("channels.csv", 'w').close()
-
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 
@@ -250,20 +247,21 @@ def get_schedule(category, period=""):
 
   return message
 
-def value_in_csv(value, csv_file):
-  with open(csv_file, 'r') as f:
-    reader = csv.reader(f)
-    for row in reader:
-      if value in row:
-        return True
-  return False
-
-def check_csv(value = str, csv_file = str):
-  with open(csv_file, 'r') as f:
-    for row in csv.reader(f):
-      if value in row:
-        return True
-  return False
+def check_csv(value, csv_file):
+  try:
+    with open(csv_file, 'r') as f:
+      if not f.read(1):
+        return False
+      else:
+        f.seek(0)
+        reader = csv.reader(f)
+        for row in reader:
+            if value in row:
+                return True
+        return False
+  except FileNotFoundError:
+    # Create csv
+    open("channels.csv", 'w').close()
 
 def subscribe_channel(values = {}, csv_file = str):
   if not values["administrator"]:
@@ -403,7 +401,6 @@ class salmon_run(app_commands.Group):
     values["channel_name"] = interaction.channel.name
     values["administrator"] = interaction.user.guild_permissions.administrator
 
-    # await interaction.response.send_message(f"Guild ID: {guild_id}, Channel ID: {channel_id}", suppress_embeds=True)
     await interaction.response.send_message(subscribe_channel(values=values, csv_file='channels.csv'), suppress_embeds=True)
 
   async def unsubscribe(self, interaction: discord.Interaction):
@@ -414,7 +411,6 @@ class salmon_run(app_commands.Group):
     values["channel_name"] = interaction.channel.name
     values["administrator"] = interaction.user.guild_permissions.administrator
 
-    # await interaction.response.send_message(f"Guild ID: {guild_id}, Channel ID: {channel_id}", suppress_embeds=True)
     await interaction.response.send_message(unsubscribe_channel(values=values, csv_file='channels.csv'), suppress_embeds=True)
 
 tree.add_command(salmon_run(name="salmon-run", description = "Get Salmon Run schedules."))
