@@ -401,8 +401,6 @@ class salmon_run(app_commands.Group):
   async def unsubscribe(self, interaction: discord.Interaction):
     await interaction.response.send_message(unsubscribe_channel(guild_id=interaction.guild.id, 
                                                                 channel_id=interaction.channel.id, 
-                                                                guild_name=interaction.guild.name, 
-                                                                channel_name=interaction.channel.name, 
                                                                 administrator=interaction.user.guild_permissions.administrator,
                                                                 csv_file='channels.csv'), suppress_embeds=True)
 
