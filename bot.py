@@ -286,7 +286,7 @@ def unsubscribe_channel(guild_id, channel_id, administrator, csv_file):
     rows = []
     with open(csv_file, "r") as f:
       for row in csv.reader(f):
-        if row[1] != channel_id and row[0] != guild_id:
+        if row[1] != str(channel_id) and row[0] != str(guild_id):
           rows.append(row)
 
       # Write the updated rows to a new CSV file
