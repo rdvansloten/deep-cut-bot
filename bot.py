@@ -247,58 +247,55 @@ def get_schedule(category, period=""):
 
   return message
 
-def check_csv(value, csv_file):
+
+def check_csv(channel_id, guild_id, csv_file):
   try:
     with open(csv_file, 'r') as f:
-      if not f.read(1):
-        return False
-      else:
-        f.seek(0)
-        reader = csv.reader(f)
-        for row in reader:
-            if value in row:
-                return True
-        return False
+      for i, row in enumerate(csv.reader(f)):
+        if i == 0:
+          if row[0] == str(channel_id) and row[1] == str(guild_id):
+            return True
+    return False
   except FileNotFoundError:
-    # Create csv
-    open("channels.csv", 'w').close()
+    open(csv_file, 'w').close()
+    return False
 
-def subscribe_channel(values = {}, csv_file = str):
-  if not values["administrator"]:
+def subscribe_channel(guild_id, channel_id, guild_name, channel_name, administrator, csv_file):
+  if not administrator:
     return "Only Administrators can subscribe a channel to the Salmon Run schedule."
 
   # Add entry to csv file
-  if not check_csv(value=values["channel_id"], csv_file=csv_file):
+  if not check_csv(str(channel_id), csv_file=csv_file):
     with open(csv_file, 'a', newline='', encoding='utf-8') as f:
       csv.writer(f).writerow([
-        values["guild_id"], 
-        values["channel_id"], 
-        values["guild_name"], 
-        values["channel_name"]
+        guild_id, 
+        channel_id, 
+        guild_name, 
+        channel_name
       ])
-      return f"Successfully subscribed <#{values['channel_id']}> to the Salmon Run schedule!"
+      return f"Successfully subscribed <#{channel_id}> to the Salmon Run schedule!"
   else:
-    return f"Channel <#{values['channel_id']}> is already subscribed to the Salmon Run schedule."
+    return f"Channel <#{channel_id}> is already subscribed to the Salmon Run schedule."
 
-def unsubscribe_channel(values = {}, csv_file = str):
-  if not values["administrator"]:
+def unsubscribe_channel(guild_id, channel_id, administrator, csv_file):
+  if not administrator:
     return "Only Administrators can unsubscribe a channel from the Salmon Run schedule."
 
   # Remove entry from csv file
-  if check_csv(value=values["channel_id"], csv_file=csv_file):
+  if check_csv(channel_id=str(channel_id), guild_id=str(guild_id), csv_file=csv_file):
     rows = []
     with open(csv_file, "r") as f:
       for row in csv.reader(f):
-        if row[1] != values["channel_id"]:
+        if row[1] != channel_id and row[0] != guild_id:
           rows.append(row)
 
       # Write the updated rows to a new CSV file
       with open(csv_file, 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         writer.writerows(rows)
-    return f"Successfully unsubscribed <#{values['channel_id']}> from the Salmon Run schedule!"
+    return f"Successfully unsubscribed <#{channel_id}> from the Salmon Run schedule!"
   else:
-    return f"Failed to unsubscribe. Channel <#{values['channel_id']}> was not subscribed to the Salmon Run schedule."
+    return f"Failed to unsubscribe. Channel <#{channel_id}> was not subscribed to the Salmon Run schedule."
 
 # def subscribe_channel(guild_id = int, channel_id = int, guild_name = str, channel_name = str, administrator = any):
 #   if administrator:
@@ -393,24 +390,21 @@ class salmon_run(app_commands.Group):
 
   @app_commands.command(name="subscribe", description="Subscribe this channel to the Salmon Run schedule.")
   async def subscribe(self, interaction: discord.Interaction):
-    values = {}
-    values["guild_id"] = interaction.guild.id
-    values["channel_id"] = interaction.channel.id
-    values["guild_name"] = interaction.guild.name
-    values["channel_name"] = interaction.channel.name
-    values["administrator"] = interaction.user.guild_permissions.administrator
+    await interaction.response.send_message(subscribe_channel(guild_id=interaction.guild.id, 
+                                                              channel_id=interaction.channel.id, 
+                                                              guild_name=interaction.guild.name, 
+                                                              channel_name=interaction.channel.name, 
+                                                              administrator=interaction.user.guild_permissions.administrator,
+                                                              csv_file='channels.csv'), suppress_embeds=True)
 
-    await interaction.response.send_message(subscribe_channel(values=values, csv_file='channels.csv'), suppress_embeds=True)
-
+  @app_commands.command(name="unsubscribe", description="Unsubscribe this channel from the Salmon Run schedule.")
   async def unsubscribe(self, interaction: discord.Interaction):
-    values = {}
-    values["guild_id"] = interaction.guild.id
-    values["channel_id"] = interaction.channel.id
-    values["guild_name"] = interaction.guild.name
-    values["channel_name"] = interaction.channel.name
-    values["administrator"] = interaction.user.guild_permissions.administrator
-
-    await interaction.response.send_message(unsubscribe_channel(values=values, csv_file='channels.csv'), suppress_embeds=True)
+    await interaction.response.send_message(unsubscribe_channel(guild_id=interaction.guild.id, 
+                                                                channel_id=interaction.channel.id, 
+                                                                guild_name=interaction.guild.name, 
+                                                                channel_name=interaction.channel.name, 
+                                                                administrator=interaction.user.guild_permissions.administrator,
+                                                                csv_file='channels.csv'), suppress_embeds=True)
 
 tree.add_command(salmon_run(name="salmon-run", description = "Get Salmon Run schedules."))
 
@@ -434,29 +428,6 @@ class splatfest(app_commands.Group):
 
 tree.add_command(splatfest(name="splatfest", description = "Get Splatfest data."))
 
-# Big Run
-# class big_run(app_commands.Group):
-#   @app_commands.command(name="next", description="Get the next Big Run rotation.")
-#   async def next(self, interaction: discord.Interaction) -> None:
-#     await interaction.response.send_message("The next Big Run is not known yet.", suppress_embeds=True)
-
-#   @app_commands.command(name="now", description="Get the current Big Run rotation.")
-#   async def now(self, interaction: discord.Interaction) -> None:
-#     await interaction.response.send_message("There is no Big Run going on.", suppress_embeds=True)
-
-# tree.add_command(big_run(name="big-run", description = "Get Big Run schedules."))
-
-# Splatfest
-# class splatfest(app_commands.Group):
-#   @app_commands.command(name="last", description="Get the last Splatfest results.")
-#   async def next(self, interaction: discord.Interaction) -> None:
-#     await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
-  
-#   @app_commands.command(name="previous", description="Get the previous Splatfest results.")
-#   async def now(self, interaction: discord.Interaction) -> None:
-#     await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
-
-# tree.add_command(splatfest(name="splatfest", description = "Get Splatfest results."))
 
 # Scheduled message
 @tasks.loop(minutes=1)
