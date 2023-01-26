@@ -265,7 +265,7 @@ def subscribe_channel(guild_id, channel_id, guild_name, channel_name, administra
     return "Only Administrators can subscribe a channel to the Salmon Run schedule."
 
   # Add entry to csv file
-  if not check_csv(str(channel_id), csv_file=csv_file):
+  if not check_csv(channel_id=channel_id, guild_id=guild_id, csv_file=csv_file):
     with open(csv_file, 'a', newline='', encoding='utf-8') as f:
       csv.writer(f).writerow([
         guild_id, 
@@ -282,7 +282,7 @@ def unsubscribe_channel(guild_id, channel_id, administrator, csv_file):
     return "Only Administrators can unsubscribe a channel from the Salmon Run schedule."
 
   # Remove entry from csv file
-  if check_csv(channel_id=str(channel_id), guild_id=str(guild_id), csv_file=csv_file):
+  if check_csv(channel_id=channel_id, guild_id=guild_id, csv_file=csv_file):
     rows = []
     with open(csv_file, "r") as f:
       for row in csv.reader(f):
