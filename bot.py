@@ -253,7 +253,7 @@ def check_csv(channel_id, guild_id, csv_file):
     with open(csv_file, 'r') as f:
       for i, row in enumerate(csv.reader(f)):
         if i == 0:
-          if row[0] == str(channel_id) and row[1] == str(guild_id):
+          if row[1] == str(channel_id) and row[0] == str(guild_id):
             return True
     return False
   except FileNotFoundError:
