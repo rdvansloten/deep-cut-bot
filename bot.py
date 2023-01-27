@@ -366,24 +366,10 @@ class splatfest(app_commands.Group):
     await interaction.response.send_message(get_splatfest(), suppress_embeds=True)
 
 tree.add_command(splatfest(name="splatfest", description = "Get Splatfest data."))
-
-
-# Scheduled message
-@tasks.loop(minutes=1)
-async def send_salmon_run_schedule():
-  if os.path.isfile('channels.csv'):
-    with open('channels.csv', newline='', encoding='utf-8') as csvfile:
-      for row in csv.reader(csvfile):
-        print(f"Sending schedule to Guild {row[0]}, {row[1]}")
-        guild = client.get_guild(int(row[0]))
-        channel = guild.get_channel(int(row[1]))
-        embed1 = discord.Embed(title='Test1', description="Hi")
-        embed2 = discord.Embed(title='Wahoo World', url="https://splatoonwiki.org/wiki/Wahoo_World")
-        await channel.send(f"Hello, this is a scheduled test message for the **#{row[3]}** channel!", embeds=[embed1, embed2])
   
 @client.event
 async def on_ready():
-  send_salmon_run_schedule.start()
+  subscribe.salmon_run_schedule.start()
   await tree.sync()
   print("Ready!")
 
