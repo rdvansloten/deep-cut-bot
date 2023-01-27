@@ -11,9 +11,6 @@ from dotenv import load_dotenv
 from discord.ext import tasks, commands
 import csv
 import subscribe
-import threading
-
-processing_lock = threading.Event()
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -374,14 +371,13 @@ tree.add_command(splatfest(name="splatfest", description = "Get Splatfest data."
 # Scheduled message
 @tasks.loop(minutes=1)
 async def send_salmon_run_schedule():
-  with open('channels.csv', newline='', encoding='utf-8') as csvfile:
-    for row in csv.reader(csvfile):
-      processing_lock.set()
-      print(f"Sending schedule to Guild {row[0]}, {row[1]}")
-      guild = client.get_guild(int(row[0]))
-      channel = guild.get_channel(int(row[1]))
-      await channel.send(f"Hello, this is a scheduled test message for the **#{row[3]}** channel!")
-  processing_lock.clear()
+  if os.path.isfile('channels.csv'):
+    with open('channels.csv', newline='', encoding='utf-8') as csvfile:
+      for row in csv.reader(csvfile):
+        print(f"Sending schedule to Guild {row[0]}, {row[1]}")
+        guild = client.get_guild(int(row[0]))
+        channel = guild.get_channel(int(row[1]))
+        await channel.send(f"Hello, this is a scheduled test message for the **#{row[3]}** channel!")
   
 @client.event
 async def on_ready():
