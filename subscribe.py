@@ -1,8 +1,11 @@
 import csv
 import requests
+import os
+from discord import app_commands
 from zoneinfo import ZoneInfo
 from datetime import datetime, timezone, timedelta
 from dateutil import parser
+from discord.ext import tasks, commands
 
 def check_csv(channel_id, guild_id, csv_file):
   try:
