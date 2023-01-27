@@ -7,6 +7,6 @@ def get_weapon_description(url):
   message = ""
 
   for p in content.find_all("p")[:2]:
-      message += p.text
+      message += f"{p.text[:200]}..."
 
   return message
