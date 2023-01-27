@@ -3,3 +3,4 @@ datetime
 python-dateutil
 discord
 python-dotenv
+beautifulsoup4

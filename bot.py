@@ -11,6 +11,7 @@ from dotenv import load_dotenv
 from discord.ext import tasks, commands
 import csv
 import subscribe
+import get_html
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -388,7 +389,7 @@ async def salmon_run_schedule():
       embeds = []
         
       for i in salmon_run_schedule["setting"]["weapons"]:        
-        embed = discord.Embed()
+        embed = discord.Embed(description=get_html.get_weapon_description(str(i['name'].replace(' ', '_'))))
         # Set the thumbnail
         embed.set_thumbnail(url=f"{i['image']['url']}")
         # Set the title and URL
@@ -407,7 +408,7 @@ async def salmon_run_schedule():
         print(f"Sending schedule to Guild {row[0]}, {row[1]}")
         guild = client.get_guild(int(row[0]))
         channel = guild.get_channel(int(row[1]))
-        await channel.send(f"**{salmon_run_schedule['setting']['coopStage']['name']}** \n The current rotation runs from {datetime.strftime(start_time, '%Y-%m-%d %H:%M')} to {datetime.strftime(end_time, '%Y-%m-%d %H:%M')} [UTC Time](https://www.utctime.net). \n \n GET TO WORK. \n \n **Weapons:**", embeds=embeds)
+        await channel.send(f"**{salmon_run_schedule['setting']['coopStage']['name']}** \n The current rotation runs from {datetime.strftime(start_time, '%Y-%m-%d %H:%M')} to {datetime.strftime(end_time, '%Y-%m-%d %H:%M')} UTC. \n \n GET TO WORK. \n \n **Weapons:**", embeds=embeds)
 
 @client.event
 async def on_ready():
