@@ -80,7 +80,6 @@ async def salmon_run_schedule():
         embed = discord.Embed()
         # Set the thumbnail
         embed.set_thumbnail(url=f"{i['image']['url']}")
-        embed.description(f"**{salmon_run_schedule['setting']['coopStage']['name']}** \n The current rotation runs from {datetime.strftime(start_time, '%Y-%m-%d %H:%M')} to {datetime.strftime(end_time, '%Y-%m-%d %H:%M')} [UTC Time](https://www.utctime.net). \n \n GET TO WORK. \n \n **Weapons:**")
         # Set the title and URL
         embed.set_author(name=f"{i['name']}", url=f"https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}")
 
@@ -97,4 +96,4 @@ async def salmon_run_schedule():
         print(f"Sending schedule to Guild {row[0]}, {row[1]}")
         guild = client.get_guild(int(row[0]))
         channel = guild.get_channel(int(row[1]))
-        await channel.send(f"Hello, this is a scheduled test message for the **#{row[3]}** channel!", embeds=embeds)
+        await channel.send(f"**{salmon_run_schedule['setting']['coopStage']['name']}** \n The current rotation runs from {datetime.strftime(start_time, '%Y-%m-%d %H:%M')} to {datetime.strftime(end_time, '%Y-%m-%d %H:%M')} [UTC Time](https://www.utctime.net). \n \n GET TO WORK. \n \n **Weapons:**", embeds=embeds)
