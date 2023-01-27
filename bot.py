@@ -377,7 +377,9 @@ async def send_salmon_run_schedule():
         print(f"Sending schedule to Guild {row[0]}, {row[1]}")
         guild = client.get_guild(int(row[0]))
         channel = guild.get_channel(int(row[1]))
-        await channel.send(f"Hello, this is a scheduled test message for the **#{row[3]}** channel!")
+        embed1 = discord.Embed(title='Test1', description="Hi")
+        embed2 = discord.Embed(title='Wahoo World', url="https://splatoonwiki.org/wiki/Wahoo_World")
+        await channel.send(f"Hello, this is a scheduled test message for the **#{row[3]}** channel!", embeds=[embed1, embed2])
   
 @client.event
 async def on_ready():
