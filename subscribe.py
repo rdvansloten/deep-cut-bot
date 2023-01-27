@@ -1,6 +1,7 @@
 import csv
 import requests
 import os
+import discord
 from discord import app_commands
 from zoneinfo import ZoneInfo
 from datetime import datetime, timezone, timedelta
