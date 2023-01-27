@@ -74,15 +74,13 @@ async def salmon_run_schedule():
       start_time = parser.parse(start_time).astimezone(utc_time)
       end_time = parser.parse(end_time).astimezone(utc_time)
 
-      message = f"**{salmon_run_schedule['setting']['coopStage']['name']}** \n The current rotation runs from {datetime.strftime(start_time, '%Y-%m-%d %H:%M')} to {datetime.strftime(end_time, '%Y-%m-%d %H:%M')} [UTC Time](https://www.utctime.net). \n \n GET TO WORK. \n \n **Weapons:**"
-
       embeds = []
         
       for i in salmon_run_schedule["setting"]["weapons"]:        
         embed = discord.Embed()
         # Set the thumbnail
         embed.set_thumbnail(url=f"{i['image']['url']}")
-        embed.description(message)
+        embed.description(f"**{salmon_run_schedule['setting']['coopStage']['name']}** \n The current rotation runs from {datetime.strftime(start_time, '%Y-%m-%d %H:%M')} to {datetime.strftime(end_time, '%Y-%m-%d %H:%M')} [UTC Time](https://www.utctime.net). \n \n GET TO WORK. \n \n **Weapons:**")
         # Set the title and URL
         embed.set_author(name=f"{i['name']}", url=f"https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}")
 
