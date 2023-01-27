@@ -389,7 +389,7 @@ async def salmon_run_schedule():
       embeds = []
         
       for i in salmon_run_schedule["setting"]["weapons"]:        
-        embed = discord.Embed(description=get_html.get_weapon_description(str(i['name'].replace(' ', '_'))))
+        embed = discord.Embed(description=get_html.get_weapon_description(i['name'].replace(' ', '_')))
         # Set the thumbnail
         embed.set_thumbnail(url=f"{i['image']['url']}")
         # Set the title and URL
