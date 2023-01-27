@@ -374,9 +374,9 @@ tree.add_command(splatfest(name="splatfest", description = "Get Splatfest data."
 # Scheduled message
 @tasks.loop(minutes=1)
 async def send_salmon_run_schedule():
-  processing_lock.set()
   with open('channels.csv', newline='', encoding='utf-8') as csvfile:
     for row in csv.reader(csvfile):
+      processing_lock.set()
       print(f"Sending schedule to Guild {row[0]}, {row[1]}")
       guild = client.get_guild(int(row[0]))
       channel = guild.get_channel(int(row[1]))
