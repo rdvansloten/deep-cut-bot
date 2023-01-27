@@ -1,12 +1,20 @@
-import csv
 import requests
 import os
-import discord
-from discord import app_commands
 from zoneinfo import ZoneInfo
 from datetime import datetime, timezone, timedelta
 from dateutil import parser
-from discord.ext import tasks, commands
+import discord
+from discord import app_commands
+from dotenv import load_dotenv
+from discord.ext import tasks
+import csv
+
+load_dotenv()
+TOKEN = os.getenv('DISCORD_TOKEN')
+
+intents = discord.Intents.default()
+client = discord.Client(intents=intents)
+tree = app_commands.CommandTree(client)
 
 def check_csv(channel_id, guild_id, csv_file):
   try:
