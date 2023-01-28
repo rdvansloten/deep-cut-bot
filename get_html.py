@@ -6,7 +6,8 @@ def get_weapon_description(url):
   content = soup.find("div", {"id": "mw-content-text"})
   message = ""
 
-  for p in content.find_all("p")[:2]:
+  for p in content.find_all("p")[1:2]:
       message += p.text
 
   return f"{message[:128]}..."  
+
