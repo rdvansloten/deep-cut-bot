@@ -379,9 +379,8 @@ async def salmon_run_schedule():
   end_time = salmon_run_schedule["endTime"]
   now = datetime.now(ZoneInfo("Europe/London")).strftime("%Y-%m-%dT%H:%M:%SZ")
 
-  # if now <= end_time and now >= start_time:
-  if True:
-    if salmon_run_schedule['setting']['coopStage']['name']:
+  if now <= end_time and now >= start_time:
+    if subscribe.register_stage(salmon_run_schedule['setting']['coopStage']['name']):
       embeds = []
         
       for i in salmon_run_schedule["setting"]["weapons"]:        

@@ -16,6 +16,32 @@ intents = discord.Intents.default()
 client = discord.Client(intents=intents)
 tree = app_commands.CommandTree(client)
 
+def check_stage():
+  file_path = 'current_stage.txt'
+  if not os.path.exists(file_path):
+    try:
+      with open(file_path, 'w') as f:
+        f.write('content')
+      return True
+    except:
+      return False
+  else:
+    return True
+
+def register_stage(content):
+  file_path = 'current_stage.txt'
+  if check_stage():
+    with open(file_path) as f:
+      file_content = f.read()
+    if file_content != content:
+      with open(file_path, 'w') as f:
+        f.write(content)
+      return True
+    else:
+      # with open(file_path, 'w') as f:
+      #   f.write(content)
+      return False
+
 def check_csv(channel_id, guild_id, csv_file):
   try:
     with open(csv_file, 'r') as f:
