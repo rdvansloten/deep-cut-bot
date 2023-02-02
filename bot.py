@@ -382,10 +382,6 @@ async def salmon_run_schedule():
   # if now <= end_time and now >= start_time:
   if True:
     if salmon_run_schedule['setting']['coopStage']['name']:
-      utc_time = timezone(timedelta(hours=0), name="UTC")
-      start_time = parser.parse(start_time).astimezone(utc_time)
-      end_time = parser.parse(end_time).astimezone(utc_time)
-
       embeds = []
         
       for i in salmon_run_schedule["setting"]["weapons"]:        
