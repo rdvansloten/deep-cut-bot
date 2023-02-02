@@ -392,19 +392,19 @@ async def salmon_run_schedule():
       
       print(embeds)
 
-  if os.path.isfile('channels.csv'):
-    with open('channels.csv', newline='', encoding='utf-8') as csvfile:
-      for row in csv.reader(csvfile):
-        print(f"Sending schedule to Guild {row[0]}, {row[1]}")
-        guild = client.get_guild(int(row[0]))
-        channel = guild.get_channel(int(row[1]))
+    if os.path.isfile('channels.csv'):
+      with open('channels.csv', newline='', encoding='utf-8') as csvfile:
+        for row in csv.reader(csvfile):
+          print(f"Sending schedule to Guild {row[0]}, {row[1]}")
+          guild = client.get_guild(int(row[0]))
+          channel = guild.get_channel(int(row[1]))
 
-        message = f"**SALMON RUN** \n"
-        message += f"{get_schedule_time('ends', end_time)}\n\n"
-        message += f"GET TO WORK.\n\n"
-        message += f"**{salmon_run_schedule['setting']['coopStage']['name']}**"
+          message = f"**SALMON RUN** \n"
+          message += f"{get_schedule_time('ends', end_time)}\n\n"
+          message += f"GET TO WORK.\n\n"
+          message += f"**{salmon_run_schedule['setting']['coopStage']['name']}**"
 
-        await channel.send(message, embeds=embeds)
+          await channel.send(message, embeds=embeds)
 
 @client.event
 async def on_ready():
