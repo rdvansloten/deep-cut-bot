@@ -389,12 +389,10 @@ async def salmon_run_schedule():
       embeds = []
         
       for i in salmon_run_schedule["setting"]["weapons"]:        
-        embed = discord.Embed(title=f"{i['name']}", description=get_html.get_weapon_description(f"https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}"))
+        embed = discord.Embed(title=f"{i['name']}", url=f"https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}", description=get_html.get_weapon_description(f"https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}"))
         # Set the thumbnail
         embed.set_thumbnail(url=f"{i['image']['url']}")
         # Set the title and URL
-        # embed.set_author(name=f"{i['name']}", url=f"https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}")
-        embed.url(f"https://splatoonwiki.org/wiki/{i['name'].replace(' ', '_')}")
         embeds.append(embed)
       
       print(embeds)
