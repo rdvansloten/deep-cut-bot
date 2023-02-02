@@ -16,13 +16,13 @@ steps:
       $(Build.BuildId)
       latest
 
-- task: SSH@0
-  displayName: Pull and Run the Docker Container
-  inputs:
-    sshEndpoint: 'TemporaryVM'
-    runOptions: 'inline'
-    inline: |
-      docker rm -vf $(docker ps -aq) && docker rmi -f $(docker images -aq);
-      docker run --name deepcutbot -d --env-file discord-token.txt rdvansloten/deep-cut-bot:latest
-    readyTimeout: '20000'
-    interactiveSession: true
+# - task: SSH@0
+#   displayName: Pull and Run the Docker Container
+#   inputs:
+#     sshEndpoint: 'TemporaryVM'
+#     runOptions: 'inline'
+#     inline: |
+#       docker rm -vf $(docker ps -aq) && docker rmi -f $(docker images -aq);
+#       docker run --name deepcutbot -d --env-file discord-token.txt rdvansloten/deep-cut-bot:latest
+#     readyTimeout: '20000'
+#     interactiveSession: true
