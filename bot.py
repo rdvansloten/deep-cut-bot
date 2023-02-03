@@ -378,7 +378,7 @@ async def salmon_run_schedule():
   start_time = salmon_run_schedule["startTime"]
   end_time = salmon_run_schedule["endTime"]
   now = datetime.now(ZoneInfo("Europe/London")).strftime("%Y-%m-%dT%H:%M:%SZ")
-
+  
   if now <= end_time and now >= start_time:
     if subscribe.register_stage(salmon_run_schedule['setting']['coopStage']['name']):
       embeds = []
@@ -389,8 +389,6 @@ async def salmon_run_schedule():
         embed.set_thumbnail(url=f"{i['image']['url']}")
         # Set the title and URL
         embeds.append(embed)
-      
-      print(embeds)
 
     if os.path.isfile('channels.csv'):
       with open('channels.csv', newline='', encoding='utf-8') as csvfile:
