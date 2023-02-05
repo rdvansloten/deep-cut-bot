@@ -12,6 +12,7 @@ from discord.ext import tasks, commands
 import csv
 import subscribe
 import get_html
+import logging
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -343,6 +344,8 @@ class salmon_run(app_commands.Group):
   async def unsubscribe(self, interaction: discord.Interaction):
     await interaction.response.send_message(subscribe.unsubscribe_channel(guild_id=interaction.guild.id, 
                                                                 channel_id=interaction.channel.id, 
+                                                                guild_name=interaction.guild.name, 
+                                                                channel_name=interaction.channel.name, 
                                                                 administrator=interaction.user.guild_permissions.administrator,
                                                                 csv_file='channels.csv'), suppress_embeds=True)
 
@@ -393,7 +396,7 @@ async def salmon_run_schedule():
       if os.path.isfile('channels.csv'):
         with open('channels.csv', newline='', encoding='utf-8') as csvfile:
           for row in csv.reader(csvfile):
-            print(f"Sending schedule to Guild {row[0]}, {row[1]}")
+            logging.info(f"Sending Salmon Run schedule to Guild {row[3]}({row[0]}), {row[4]}({row[1]})")
             guild = client.get_guild(int(row[0]))
             channel = guild.get_channel(int(row[1]))
 
@@ -408,6 +411,6 @@ async def salmon_run_schedule():
 async def on_ready():
   salmon_run_schedule.start()
   await tree.sync()
-  print("Ready!")
+  logging.info("Bot is ready to receive/send!")
 
 client.run(TOKEN)

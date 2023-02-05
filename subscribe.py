@@ -8,6 +8,7 @@ from discord import app_commands
 from dotenv import load_dotenv
 from discord.ext import tasks
 import csv
+import logging
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
@@ -38,8 +39,6 @@ def register_stage(content):
         f.write(content)
       return True
     else:
-      # with open(file_path, 'w') as f:
-      #   f.write(content)
       return False
 
 def check_csv(channel_id, guild_id, csv_file):
@@ -56,7 +55,9 @@ def check_csv(channel_id, guild_id, csv_file):
 
 def subscribe_channel(guild_id, channel_id, guild_name, channel_name, administrator, csv_file):
   if not administrator:
-    return "Only Administrators can subscribe a channel to the Salmon Run schedule."
+    message = f"Only Administrators can subscribe a channel to the Salmon Run schedule."
+    logging.info(f"Guild {guild_name}({guild_id}): {message}")
+    return message
 
   # Add entry to csv file
   if not check_csv(channel_id=channel_id, guild_id=guild_id, csv_file=csv_file):
@@ -67,13 +68,19 @@ def subscribe_channel(guild_id, channel_id, guild_name, channel_name, administra
         guild_name, 
         channel_name
       ])
-      return f"Successfully subscribed <#{channel_id}> to the Salmon Run schedule!"
+      message = f"Successfully subscribed <#{channel_id}> to the Salmon Run schedule!"
+      logging.info(f"Guild {guild_name}({guild_id}): {message}")
+      return message
   else:
-    return f"Channel <#{channel_id}> is already subscribed to the Salmon Run schedule."
+    message = f"Channel <#{channel_id}> is already subscribed to the Salmon Run schedule."
+    logging.info(f"Guild {guild_name}({guild_id}): {message}")
+    return message
 
-def unsubscribe_channel(guild_id, channel_id, administrator, csv_file):
+def unsubscribe_channel(guild_id, channel_id, guild_name, channel_name, administrator, csv_file):
   if not administrator:
-    return "Only Administrators can unsubscribe a channel from the Salmon Run schedule."
+    message = "Only Administrators can unsubscribe a channel from the Salmon Run schedule."
+    logging.info(f"Guild {guild_name}({guild_id}): {message}")
+    return message
 
   # Remove entry from csv file
   if check_csv(channel_id=channel_id, guild_id=guild_id, csv_file=csv_file):
@@ -87,6 +94,11 @@ def unsubscribe_channel(guild_id, channel_id, administrator, csv_file):
       with open(csv_file, 'w', newline='', encoding='utf-8') as file:
         writer = csv.writer(file)
         writer.writerows(rows)
-    return f"Successfully unsubscribed <#{channel_id}> from the Salmon Run schedule!"
+
+    message = f"Successfully unsubscribed <#{channel_id}> from the Salmon Run schedule!"
+    logging.info(f"Guild {guild_name}({guild_id}): {message}")
+    return message
   else:
-    return f"Failed to unsubscribe. Channel <#{channel_id}> was not subscribed to the Salmon Run schedule."
+    message = f"Failed to unsubscribe. Channel <#{channel_id}> was not subscribed to the Salmon Run schedule."
+    logging.info(f"Guild {guild_name}({guild_id}): {message}")
+    return message
