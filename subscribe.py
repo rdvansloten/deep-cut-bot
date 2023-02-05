@@ -56,7 +56,7 @@ def check_csv(channel_id, guild_id, csv_file):
 def subscribe_channel(guild_id, channel_id, guild_name, channel_name, administrator, csv_file):
   if not administrator:
     message = f"Only Administrators can subscribe a channel to the Salmon Run schedule."
-    logging.info(f"Guild {guild_name}({guild_id}): {message}")
+    logging.warning(f"Guild {guild_name}({guild_id}): {message}")
     return message
 
   # Add entry to csv file
@@ -73,13 +73,13 @@ def subscribe_channel(guild_id, channel_id, guild_name, channel_name, administra
       return message
   else:
     message = f"Channel <#{channel_id}> is already subscribed to the Salmon Run schedule."
-    logging.info(f"Guild {guild_name}({guild_id}): {message}")
+    logging.warning(f"Guild {guild_name}({guild_id}): {message}")
     return message
 
 def unsubscribe_channel(guild_id, channel_id, guild_name, channel_name, administrator, csv_file):
   if not administrator:
     message = "Only Administrators can unsubscribe a channel from the Salmon Run schedule."
-    logging.info(f"Guild {guild_name}({guild_id}): {message}")
+    logging.warning(f"Guild {guild_name}({guild_id}): {message}")
     return message
 
   # Remove entry from csv file
@@ -100,5 +100,5 @@ def unsubscribe_channel(guild_id, channel_id, guild_name, channel_name, administ
     return message
   else:
     message = f"Failed to unsubscribe. Channel <#{channel_id}> was not subscribed to the Salmon Run schedule."
-    logging.info(f"Guild {guild_name}({guild_id}): {message}")
+    logging.warning(f"Guild {guild_name}({guild_id}): {message}")
     return message
