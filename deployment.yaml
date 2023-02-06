@@ -15,7 +15,7 @@ spec:
         role: discord-bot
     spec:
       containers:
-        - name: deep-cut-bot
+        - name: bot
           image: rdvansloten/deep-cut-bot:latest
           env: 
           - name: DISCORD_TOKEN 
@@ -23,3 +23,46 @@ spec:
               secretKeyRef: 
                 name: deep-cut-bot-secret 
                 key: discordtoken
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: deep-cut-bot-secret
+                key: mysqlrootpassword
+          - name: MYSQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: deep-cut-bot-secret
+                key: mysqldatabase
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: deep-cut-bot-secret
+                key: mysqluser
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: deep-cut-bot-secret
+                key: mysqlpassword
+        - name: database
+          image: mysql:5.7-debian
+          env:
+          - name: MYSQL_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: deep-cut-bot-secret
+                key: mysqlrootpassword
+          - name: MYSQL_DATABASE
+            valueFrom:
+              secretKeyRef:
+                name: deep-cut-bot-secret
+                key: mysqldatabase
+          - name: MYSQL_USER
+            valueFrom:
+              secretKeyRef:
+                name: deep-cut-bot-secret
+                key: mysqluser
+          - name: MYSQL_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: deep-cut-bot-secret
+                key: mysqlpassword

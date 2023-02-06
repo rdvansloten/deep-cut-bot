@@ -12,6 +12,7 @@ import logging
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+logging.basicConfig(filename='bot.log', encoding='utf-8', level=logging.INFO)
 
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)

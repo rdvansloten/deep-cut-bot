@@ -16,6 +16,7 @@ import logging
 
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
+logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', filename='bot.log', encoding='utf-8', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
 
 headers = {
   'User-Agent': 'Deep Cut Bot',
@@ -396,7 +397,7 @@ async def salmon_run_schedule():
       if os.path.isfile('channels.csv'):
         with open('channels.csv', newline='', encoding='utf-8') as csvfile:
           for row in csv.reader(csvfile):
-            logging.info(f"Sending Salmon Run schedule to Guild {row[3]}({row[0]}), {row[4]}({row[1]})")
+            logging.info(f"Sending Salmon Run schedule to Guild {row[2]}({row[0]}), {row[3]}({row[1]})")
             guild = client.get_guild(int(row[0]))
             channel = guild.get_channel(int(row[1]))
 
